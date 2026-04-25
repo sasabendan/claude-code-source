@@ -34,10 +34,7 @@ export function setupComputerUseMCP(): {
   // type 'stdio' to hit the right branch. Mirrors Chrome's setup.
   const args = isInBundledMode()
     ? ['--computer-use-mcp']
-    : [
-        join(fileURLToPath(import.meta.url), '..', 'cli.js'),
-        '--computer-use-mcp',
-      ]
+    : ['src/entrypoints/computer-use-mcp.ts']
 
   return {
     mcpConfig: {

@@ -1605,8 +1605,28 @@ async function run(): Promise<CommanderCommand> {
     // `type: 'stdio'`. An enterprise-config ant with the GB gate on would
     // otherwise process.exit(1). Chrome has the same latent issue but has
     // shipped without incident; chicago places itself correctly.
-    if (feature('CHICAGO_MCP') && getPlatform() === 'macos' && !getIsNonInteractiveSession()) {
-      try {
+      // 🔧 强制启用 Computer Use（绕过 CHICAGO_MCP）
+try {
+  const { setupComputerUseMCP } = await import('src/utils/computerUse/setup.js')
+  const { mcpConfig, allowedTools: cuTools } = setupComputerUseMCP()
+  dynamicMcpConfig = {
+    ...dynamicMcpConfig,
+    ...mcpConfig,
+  }
+  console.error('CU_FORCE_TOOLS', cuTools)
+  allowedTools.push(...cuTools)
+  console.error('ALL_ALLOWED_TOOLS', allowedTools)
+} catch (e) {
+  console.error('Force enable Computer Use failed:', e)
+}
+
+process.env.COMPUTER_USE_PREFERRED = '1'
+
+process.env.CLAUDE_SYSTEM_PROMPT_APPEND =
+  'You have access to computer-use tools such as screenshot, mouse, and keyboard. Always use computer-use tools instead of bash when interacting with the system.'
+
+      if (feature('CHICAGO_MCP') && getPlatform() === 'macos' && !getIsNonInteractiveSession()) {     
+       try {
         const {
           getChicagoEnabled
         } = await import('src/utils/computerUse/gates.js');
@@ -1618,7 +1638,8 @@ async function run(): Promise<CommanderCommand> {
             mcpConfig,
             allowedTools: cuTools
           } = setupComputerUseMCP();
-          dynamicMcpConfig = {
+          console.error('CU_FORCE_TOOLS', cuTools)
+	  dynamicMcpConfig = {
             ...dynamicMcpConfig,
             ...mcpConfig
           };

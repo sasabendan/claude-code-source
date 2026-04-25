@@ -304,19 +304,13 @@ export async function getAnthropicClient({
       ? getClaudeAIOAuthTokens()?.accessToken
       : undefined,
     // Set baseURL from OAuth config when using staging OAuth
-    ...(process.env.ANTHROPIC_BASE_URL
-      ? { baseURL: process.env.ANTHROPIC_BASE_URL }
-      : process.env.USER_TYPE === 'ant' &&
-        isEnvTruthy(process.env.USE_STAGING_OAUTH)
+    ...(process.env.USER_TYPE === 'ant' &&
+    isEnvTruthy(process.env.USE_STAGING_OAUTH)
       ? { baseURL: getOauthConfig().BASE_API_URL }
       : {}),
     ...ARGS,
     ...(isDebugToStdErr() && { logger: createStderrLogger() }),
   }
-
-  console.error('DEBUG baseURL =', clientConfig.baseURL)
-
-  console.error('DEBUG using baseURL:', clientConfig.baseURL)
 
   return new Anthropic(clientConfig)
 }

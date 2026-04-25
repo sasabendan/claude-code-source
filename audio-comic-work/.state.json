@@ -1,0 +1,23 @@
+{
+  "title": "凡人修仙传-第1集",
+  "source": "knowledge-base/characters/示例主角.md",
+  "started": "2026-04-24T21:20:52Z",
+  "current_step": 7,
+  "updated": "2026-04-24 16:20:53",
+  "step_1_done": true,
+  "step_1_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step1_script.log",
+  "step_2_done": true,
+  "step_2_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step2_storyboard.log",
+  "step_3_done": true,
+  "step_3_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step3_image.log",
+  "step_4_done": true,
+  "step_4_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step4_voice.log",
+  "step_5_done": true,
+  "step_5_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step5_synth.log",
+  "step_6_done": true,
+  "step_6_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step6_layout.log",
+  "step_7_done": true,
+  "step_7_log": "/Users/jennyhu/claude-code-source/audio-comic-work/logs/step7_publish.log",
+  "status": "completed",
+  "completed": "2026-04-24T21:20:53Z"
+}

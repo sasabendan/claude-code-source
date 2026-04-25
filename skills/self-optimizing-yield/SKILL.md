@@ -1,0 +1,99 @@
+---
+name: self-optimizing-yield
+description: 持续优化良品率，实现"贾维斯化"。当生产批次结束后自动触发。核心能力包括良品率指标体系、经验库（Obsidian 双链）、自动调优回路、反馈信号接入、防退化保护。
+---
+
+# Skill: self-optimizing-yield（良品率优化）
+
+## 功能定位
+持续积累经验、自动调参、提高下一次良品率。
+
+## 核心能力
+
+| 能力 | 说明 | 类型 |
+|------|------|------|
+| 良品率指标 | 分环节统计通过率 | [本地请求] |
+| 经验库 | 双链 Markdown 存储 | [本地请求] |
+| 自动调优 | 提示词/参数优化 | [网络请求] |
+| 反馈接入 | 多源反馈信号 | [网络请求]/[本地请求] |
+| 防退化 | 新策略回滚保护 | [本地请求] |
+
+## 输入
+
+```yaml
+production_run_id: <生产批次 ID>
+artifacts: <各环节产物路径>
+feedback: <反馈信号，可为空>
+```
+
+## 输出
+
+```yaml
+yield_metrics: <分环节良品率>
+new_patterns: <可复用模式列表>
+updated_prompts: <更新的提示词>
+rollback_triggered: true|false
+next_run_config: <推荐配置>
+```
+
+## 触发场景
+每次生产批次结束后自动触发。
+
+## 良品率指标
+
+```yaml
+yield_rate = 一次通过数 / 总生产数
+
+分环节统计:
+  - 脚本通过率
+  - 分镜通过率
+  - 生图通过率
+  - 配音通过率
+  - 合成通过率
+
+目标: 每周环比提升 ≥3%，直到 ≥95%
+```
+
+## 经验库结构
+
+```
+experience-vault/
+├── failure-cases/
+│   └── [[failure-case-YYYYMMDD-HHMM]]
+├── patterns/
+│   └── [[pattern-lib]]
+└── templates/
+    └── [[prompt-templates]]
+```
+
+## 优化回路
+
+```
+失败案例 → 归因分析 → 生成新 prompt → A/B 测试 → 胜出者入库
+```
+
+## 防退化保护
+
+```yaml
+rollback_conditions:
+  - 连续 3 次不如旧策略
+  - 金标准测试集不通过
+  - 良品率下降 >10%
+```
+
+## 参考资料
+
+- eugeniughelbur/obsidian-second-brain（反馈闭环）
+- JimLiu/baoyu-skills（经验沉淀）
+
+## 验收标准
+
+- [ ] 结构化 yield_metrics 产出
+- [ ] 至少 1 条经验入库
+- [ ] 更新的提示词通过测试
+- [ ] 回滚机制有效
+- [ ] Obsidian 双链格式兼容
+
+## 代码入口
+
+`skills/self-optimizing-yield/scripts/yield-optimizer.sh`
