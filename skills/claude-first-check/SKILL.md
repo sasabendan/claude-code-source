@@ -89,6 +89,20 @@ git show <commit> -- "<文件路径>"
 grep -A 20 "## 参考文献状态" tasks/audio-comic-skills/WRAP.md
 ```
 
+## 心跳机制（C18）
+
+每次会话启动时：
+1. 读取 `tasks/audio-comic-skills/HEARTBEAT.md`（行为合同）
+2. 读取 `tasks/audio-comic-skills/heartbeat-state.md`（状态）
+3. 计算距上次会话的时间差
+
+```
+session_gap > 3 分钟 → 自检，继续主线
+session_gap ≤ 3 分钟 → HEARTBEAT_OK
+```
+
+详见：`skills/claude-first-check/heartbeat-rules.md`
+
 ## 自我检查清单
 
 每次执行工作前自问：
