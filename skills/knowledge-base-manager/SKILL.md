@@ -92,10 +92,28 @@ graph LR
 
 - [ ] 支持得到笔记 API 调用
 - [ ] 支持 GitHub 备份
-- [ ] Obsidian 双链格式兼容
-- [ ] 增量式知识更新
-- [ ] Git 版本控制
+- [x] Obsidian 双链格式兼容（C23）
+- [x] 增量式知识更新（JSONL 追加）
+- [x] Git 版本控制
+- [x] Rust 重写（C1）: kb-rust
 
 ## 代码入口
+
+### Rust 工具（C1 优先）
+
+```bash
+# 位置
+kb-rust/target/release/kb-rust --kb-dir knowledge-base <cmd>
+
+# 命令
+kb-rust init        # 初始化目录结构
+kb-rust list        # 列出所有条目
+kb-rust query <type>  # 按类型查询
+kb-rust search <kw>   # 搜索名称/标签
+kb-rust rebuild      # 从 Markdown 文件重建索引
+kb-rust add <name> <type> <tags>  # 追加索引条目
+```
+
+### Python 脚本（备用）
 
 `skills/knowledge-base-manager/scripts/kb-manager.sh`
