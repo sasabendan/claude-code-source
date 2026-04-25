@@ -25,6 +25,14 @@ impl KbManager {
     fn new(kb_dir: &str) -> Self { KbManager { kb_dir: PathBuf::from(kb_dir) } }
     fn index_path(&self) -> PathBuf { self.kb_dir.join(".index.jsonl") }
 
+    fn ensure_index_exists(&self) -> std::io::Result<()> {
+        let path = self.index_path();
+        if !path.exists() {
+            fs::File::create(path)?;
+        }
+        Ok(())
+    }
+
     fn load_index(&self) -> Vec<KbEntry> {
         let path = self.index_path();
         if !path.exists() {
@@ -77,7 +85,7 @@ impl KbManager {
             let fname = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
             if fname == ".index.jsonl" { continue; }
             let content = fs::read_to_string(path).unwrap_or_default();
-            let name = content.lines().next().map(|l| l.trim_start_matches("# ").to_string()).unwrap_or_default();
+            let name = extract_title(&content);
             let entry_type = infer_type(path);
             let tags = extract_tags(&content);
             let created = extract_created(&content);
@@ -100,18 +108,54 @@ fn infer_type(path: &std::path::Path) -> String {
     let parent = path.parent().and_then(|p| p.file_name()).and_then(|n| n.to_str()).unwrap_or("experience");
     match parent {
         "experience" => "experience".to_string(),
-        "styles" => "style".to_string(),
+        "styles" => "styles".to_string(),
         "plot" => "plot".to_string(),
-        "characters" => "character".to_string(),
+        "characters" => "characters".to_string(),
         "world" => "world".to_string(),
-        "voices" => "voice".to_string(),
+        "voices" => "voices".to_string(),
         _ => parent.to_string(),
     }
 }
 
+fn extract_title(content: &str) -> String {
+    let mut in_front = false;
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            if !in_front { in_front = true; continue; }
+            else { in_front = false; continue; }
+        }
+        if in_front && trimmed.starts_with("name:") {
+            return trimmed.trim_start_matches("name:").trim().to_string();
+        }
+        if !in_front && trimmed.starts_with("# ") {
+            return trimmed.trim_start_matches("# ").to_string();
+        }
+    }
+    String::new()
+}
+
 fn extract_tags(content: &str) -> String {
-    content.lines().filter(|l| l.starts_with("tags:"))
-        .map(|l| l.trim_start_matches("tags:").trim()).collect::<Vec<_>>().join(", ")
+    let mut in_front = false;
+    let mut tags = String::new();
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            if !in_front { in_front = true; continue; }
+            else { in_front = false; continue; }
+        }
+        if in_front && trimmed.starts_with("tags:") {
+            // handle YAML array: tags: [a, b, c] or inline: tags: tag1, tag2
+            let val = trimmed.trim_start_matches("tags:").trim();
+            if val.starts_with("[") {
+                tags = val.trim_start_matches("[").trim_end_matches("]").replace(", ", ",").trim().to_string();
+            } else {
+                tags = val.to_string();
+            }
+            break;
+        }
+    }
+    tags
 }
 
 fn extract_created(content: &str) -> String {
@@ -119,17 +163,42 @@ fn extract_created(content: &str) -> String {
         .map(|l| l.trim_start_matches("created:").trim()).next().unwrap_or("").to_string()
 }
 
+fn print_usage() {
+    println!("kb-rust: LLM Wiki Manager (MD + JSONL, no SQLite)");
+    println!("  init        Init KB structure");
+    println!("  add <name> <type> <tags>  Add");
+    println!("  list        List by type");
+    println!("  query <type>  Query");
+    println!("  search <kw>  Search");
+    println!("  rebuild     Rebuild index from MDs");
+    println!("  --kb-dir <path>  Set KB dir");
+    println!("  -h, --help  Show this help");
+}
+
+fn sanitize_filename(name: &str) -> String {
+    let trimmed = name.trim();
+    if trimmed.is_empty() {
+        return "untitled".to_string();
+    }
+    let mut out = String::with_capacity(trimmed.len());
+    for ch in trimmed.chars() {
+        let bad = matches!(ch, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|') || ch.is_control();
+        if bad {
+            out.push('_');
+        } else if ch.is_whitespace() {
+            out.push('-');
+        } else {
+            out.push(ch);
+        }
+    }
+    let out = out.trim_matches(&['.', ' ', '-'][..]).to_string();
+    if out.is_empty() { "untitled".to_string() } else { out }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2 {
-        println!("kb-rust: LLM Wiki Manager (MD + JSONL, no SQLite)");
-        println!("  init        Init KB structure");
-        println!("  add <name> <type> <tags>  Add");
-        println!("  list        List by type");
-        println!("  query <type>  Query");
-        println!("  search <kw>  Search");
-        println!("  rebuild     Rebuild index from MDs");
-        println!("  --kb-dir <path>  Set KB dir");
+        print_usage();
         process::exit(0);
     }
 
@@ -143,23 +212,51 @@ fn main() {
     }
     let kb = KbManager::new(&kb_dir_str);
 
-    if cmd_idx >= args.len() { process::exit(0); }
+    if args.iter().any(|a| a == "--help" || a == "-h") {
+        print_usage();
+        process::exit(0);
+    }
+
+    if cmd_idx >= args.len() {
+        print_usage();
+        process::exit(0);
+    }
     let cmd = &args[cmd_idx];
     match cmd.as_str() {
         "init" => {
             for sub in &["experience","styles","plot","characters","world","voices"] {
                 fs::create_dir_all(kb_dir_str.clone() + "/" + sub).ok();
             }
+            kb.ensure_index_exists().ok();
             println!("✅ KB structure ready");
         }
         "add" => {
             if cmd_idx+3 >= args.len() { eprintln!("❌ add <name> <type> <tags>"); process::exit(1); }
+            let entry_name = args[cmd_idx+1].clone();
+            let entry_type = args[cmd_idx+2].clone();
+            let tags = args[cmd_idx+3].clone();
+            let created = chrono::Utc::now().to_rfc3339().to_string();
+
+            // Best-effort: create a Markdown file so rebuild has something to scan.
+            let mut file_rel: Option<String> = None;
+            if !entry_type.trim().is_empty() {
+                let dir = kb.kb_dir.join(&entry_type);
+                fs::create_dir_all(&dir).ok();
+                let filename = format!("{}.md", sanitize_filename(&entry_name));
+                let path = dir.join(&filename);
+                let rel = format!("{}/{}", entry_type, filename);
+                if !path.exists() {
+                    let content = format!("# {}\n\ncreated: {}\ntags: {}\n", entry_name, created, tags);
+                    fs::write(&path, content).ok();
+                }
+                file_rel = Some(rel);
+            }
             let entry = KbEntry {
-                entry_type: args[cmd_idx+1].clone(),
-                name: args[cmd_idx+2].clone(),
-                file: None,
-                tags: args[cmd_idx+3].clone(),
-                created: chrono::Utc::now().to_rfc3339().to_string(),
+                entry_type,
+                name: entry_name,
+                file: file_rel,
+                tags,
+                created,
                 extra: HashMap::new(),
             };
             if let Err(e) = kb.add_entry(&entry) { eprintln!("❌ {}", e); process::exit(1); }
@@ -188,6 +285,9 @@ fn main() {
                 Ok(c) => println!("✅ Rebuilt: {} entries", c),
                 Err(e) => { eprintln!("❌ {}", e); process::exit(1); }
             }
+        }
+        "-h" | "--help" => {
+            print_usage();
         }
         "--kb-dir" => {}
         _ => { eprintln!("❌ unknown: {}", cmd); process::exit(1); }
