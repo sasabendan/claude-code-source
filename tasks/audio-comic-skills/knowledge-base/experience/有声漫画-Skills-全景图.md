@@ -9,7 +9,7 @@ status: stable
 
 # 有声漫画 Skills 全景图
 
-> 版本：1.2 | 更新：2026-04-26
+> 版本：1.3 | 更新：2026-04-26
 > 用途：监工（Claude）掌握所有角色分工，便于价值观判断和优先级决策
 
 ---
@@ -45,7 +45,7 @@ status: stable
 | [[claude-values]] | 价值观判断，知识库价值层级 | 「什么重要」「该不该做」时 |
 | [[skill-creator]] | Skill 创建/优化/触发测试 | 「创建 skill」/「优化触发」/「测试 skill」时 |
 
-### 三、工具技能（9个，辅助支撑）
+### 三、工具技能（10个，辅助支撑）
 
 | Skill | 用途 |
 |-------|------|
@@ -53,6 +53,7 @@ status: stable
 | [[claude-usage-monitor]] | Claude 额度监控，配额优化 |
 | [[minimax-usage]] | MiniMax Token Plan 用量（5h/24h 周期） |
 | [[core-asset-protection]] | 核心资产保护，备份模型执行（HC-AP1/2/3） |
+| [[kb-auto-linker]] | 知识库双链自动关联，孤立页面消除 |
 | [[encrypted-backup]] | AES-256 加密备份，GitHub 并行备份 |
 | [[claude-export-markdown]] | Claude 回复导出 Markdown |
 | [[claude-cite-reference]] | 引用标记，@ref: 展开 |
@@ -132,7 +133,7 @@ status: stable
 | kb-rust 工具链 | ✅ v2.1.1 就绪 | 14 命令，auto-rebuild 生效 |
 | 知识库入口 | ✅ 总条目 59 条 | _index.md 和 .index.jsonl 同步 |
 | 双链图谱 | ⚠️ 1 backlink target | 页面无 [[wikilinks]]，待补 |
-| Skills 全景图 | ✅ 20 条 KB 条目 | 本文档 |
+| Skills 全景图 | ✅ 21 条 KB 条目 | 本文档 |
 | 备份机制 | ✅ HC-AP1/2/3 + encrypted-backup | 核心资产保护体系（FC004 后加固） |
 | 良品率闭环 | ❌ 未实际运行 | 依赖生产流水线真实运转 |
 

@@ -1,0 +1,61 @@
+{
+  "skill_name": "kb-auto-linker",
+  "version": "1.1",
+  "created": "2026-04-26",
+  "description": "知识库自动化双链关联 Skill——v1.1 基于真实运行 Review 更新",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "补全知识库双链，当前有 35 个孤立页面",
+      "should_trigger": true,
+      "category": "language-trigger",
+      "expected_behavior": "激活，识别孤立页面，添加 outbound [[wikilinks]]",
+      "actual_result": "✅ 33/35 页面添加了相关链接"
+    },
+    {
+      "id": 2,
+      "prompt": "lint 输出孤立页面 > 10 时建议调用",
+      "should_trigger": true,
+      "category": "auto-suggest",
+      "expected_behavior": "当 lint 结果孤立页面 > 10，自动建议调用",
+      "actual_result": "⚠️ 当前由 CLAUDE.md 或 skill 调用后触发，非自动"
+    },
+    {
+      "id": 3,
+      "prompt": "消除孤立页面，让图谱生长",
+      "should_trigger": true,
+      "category": "language-trigger",
+      "expected_behavior": "孤立数下降",
+      "actual_result": "⚠️ 策略一（outbound link）不降低孤立数；需策略二（hub → orphan inbound）"
+    },
+    {
+      "id": 4,
+      "prompt": "查询知识库",
+      "should_trigger": false,
+      "category": "should-not-trigger",
+      "expected_behavior": "纯查询，不触发",
+      "actual_result": "✅ 不触发"
+    },
+    {
+      "id": 5,
+      "prompt": "重建索引",
+      "should_trigger": false,
+      "category": "should-not-trigger",
+      "expected_behavior": "rebuild 是 kb-rust 的活，不触发",
+      "actual_result": "✅ 不触发"
+    },
+    {
+      "id": 6,
+      "prompt": "添加 kb-rust v1 源码快照的 wikilink",
+      "should_trigger": true,
+      "category": "specific-page",
+      "expected_behavior": "关联到 [[kb-rust 归档迁移记录]]",
+      "actual_result": "✅ 添加成功"
+    }
+  ],
+  "iteration_notes": [
+    "v1.0 draft: 实现策略一（outbound link），33/35 页面添加成功",
+    "Review 发现：outbound link 不降低孤立数（只改善可导航性）",
+    "v1.1 更新：明确两种策略，策略一已完成，策略二（hub → orphan）待实现"
+  ]
+}
