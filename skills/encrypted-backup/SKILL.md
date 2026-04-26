@@ -1,6 +1,6 @@
 ---
 name: encrypted-backup
-description: 将核心资产加密后备份到 GitHub。触发词："加密备份" / "加密推送" / "encrypt" / "backup" / "enc" / "备份到github" / "安全备份"。执行前必须先调用 core-asset-protection 确认 HC-AP1（本地明文永远保留）。密码存 ~/.backup-password。
+description: 将核心资产加密后备份到 GitHub。触发词："加密备份" / "加密推送" / "encrypt" / "backup" / "enc" / "备份到 github" / "安全备份"。执行前必须先调用 core-asset-protection 确认 HC-AP1（本地明文永远保留）。密码存 ~/.backup-password。
 ---
 
 # Skill: encrypted-backup（加密备份）

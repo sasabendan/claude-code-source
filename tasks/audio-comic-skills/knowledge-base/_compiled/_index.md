@@ -1,7 +1,7 @@
 # 知识库索引
 
 最后更新：2026-04-25
-总条目：59
+总条目：60
 
 ## 经验知识 
 - [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 

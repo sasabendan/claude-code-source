@@ -1,6 +1,7 @@
 ---
 name: task-book-keeper
 description: 任务书管理与核心记忆保留迭代。当用户说"审视任务书"、"更新理解"、"记录进展"、"保留记忆"、"备份任务"、"查看进度"时触发。本 Skill 管理有声漫画自动化生产 Skills 体系的任务书（TASK_REQUIREMENTS.md / TASK_PROGRESS.md）。所有任务书内容为核心资产（HC-AP1：本地明文永远保留）。加密推送请调用 encrypted-backup Skill。
+Do NOT use when: 用户说"加密推送"、"加密备份"、"安全备份"——应由 encrypted-backup Skill 触发，本 Skill 不越权。
 ---
 
 # Skill: task-book-keeper（任务书管理）
