@@ -2,3 +2,21 @@ node_modules/
 .DS_Store
 *.log
 .claude-dev/
+
+# kb-rust build artifacts
+kb-rust/target/
+kb-rust/v2/target/
+kb-rust/*/target/
+
+# kb-rust test directories (C-DEV: 禁止并入生产 KB)
+kb-rust/knowledge-base-test/
+kb-rust/v2/kb-v2-test/
+
+# Reference project clones (managed separately)
+tasks/nashsu-llm_wiki/
+tasks/pratiyush-llm-wiki/
+
+# C0 local backups (large, git-tracked but should be ignored)
+tasks/audio-comic-skills/backups/*.tar.gz
+
+# .enc files are git-tracked (encrypted backup mechanism). Do NOT add to gitignore.

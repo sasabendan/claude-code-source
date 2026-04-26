@@ -1,13 +1,20 @@
 #!/bin/bash
 # C0 自动备份脚本
 # 每 5 分钟执行：GitHub 加密备份（主线）+ 本地明文备份
-# C11: 每 5 分钟 GitHub 自动备份，密码 omlx2046，无需反复授权
+# C11 + HC-AP3: 每 5 分钟 GitHub 自动备份，密码存 ~/.backup-password
 
 set -e
 
 PROJECT_DIR="/Users/jennyhu/claude-code-source"
 BACKUP_DIR="$PROJECT_DIR/tasks/audio-comic-skills/backups"
-PASSWORD="omlx2046"
+# HC-AP3: 密码存 ~/.backup-password（chmod 600），不推 GitHub
+PASSWORD_FILE="$HOME/.backup-password"
+if [ ! -f "$PASSWORD_FILE" ]; then
+    echo "❌ 密码文件不存在: $PASSWORD_FILE"
+    echo "   设置：echo "omlx2046" > $PASSWORD_FILE \&\& chmod 600 $PASSWORD_FILE"
+    exit 1
+fi
+PASSWORD=$(cat "$PASSWORD_FILE")
 
 cd "$PROJECT_DIR"
 
@@ -51,3 +58,4 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 fi
 
 echo "[$(date '+%Y-%m-%d %H:%M')] C0 备份完成"
+

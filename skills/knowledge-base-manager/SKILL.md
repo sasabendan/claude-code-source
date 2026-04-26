@@ -99,20 +99,36 @@ graph LR
 
 ## 代码入口
 
-### Rust 工具（C1 优先）
+### Rust 工具（v2，当前版本）
 
 ```bash
 # 位置
-kb-rust/target/release/kb-rust --kb-dir knowledge-base <cmd>
+kb-rust/v2/target/release/kb-rust-v2 --kb-dir knowledge-base <cmd>
 
-# 命令
-kb-rust init        # 初始化目录结构
-kb-rust list        # 列出所有条目
-kb-rust query <type>  # 按类型查询
-kb-rust search <kw>   # 搜索名称/标签
-kb-rust rebuild      # 从 Markdown 文件重建索引
-kb-rust add <name> <type> <tags>  # 追加索引条目
+# 命令（v2 新增 workflow / chars / backlinks / ingest / lint）
+kb-rust-v2 init              # 初始化目录结构（含 _compiled/ + .project.json）
+kb-rust-v2 list              # 列出所有条目
+kb-rust-v2 query <type>      # 按类型查询
+kb-rust-v2 search <kw>       # 搜索名称/标签（大小写不敏感）
+kb-rust-v2 rebuild           # 重建索引 + 双链解析 + _index.md + _overview.md
+kb-rust-v2 add <name> <type> <tags>  # 追加索引条目（含 updated/status 字段）
+kb-rust-v2 workflow          # 输出工作流说明书（WORKFLOW.md）
+kb-rust-v2 chars             # 列出角色及状态（stable/wip/retired）
+kb-rust-v2 backlinks <target>  # 查找指向 target 的所有文件
+kb-rust-v2 ingest <file>    # 摄入源文件 → 更新 _log.md
+kb-rust-v2 lint              # 健康检查（孤立页面/bad entries/总条目/双链统计）
+kb-rust-v2 project-info      # 输出项目元数据（.project.json）
+kb-rust-v2 sync-biji        # 同步 GetBiji API（需 --features biji）
 ```
+
+### v2 文档
+
+| 文档 | 位置 | 说明 |
+|------|------|------|
+| SPEC.md | kb-rust/v2/SPEC.md | v2 规格说明书（三层架构/命令/数据流） |
+| REQUIREMENTS_V2.md | kb-rust/v2/REQUIREMENTS_V2.md | v2 需求文档（R1-R11，含态控设计） |
+| CHANGELOG.md | kb-rust/v2/CHANGELOG.md | v2 开发日志（版本记录/Bug修复） |
+| REFERENCE_PROJECTS.md | kb-rust/v2/REFERENCE_PROJECTS.md | 参考项目分析（Karpathy/nashsu/lucasastorian） |
 
 ### Python 脚本（备用）
 
