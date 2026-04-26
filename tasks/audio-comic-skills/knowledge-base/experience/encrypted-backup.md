@@ -20,9 +20,9 @@ status: stable
 
 ## 密码管理
 
-**密码存储于 macOS Keychain**（本地加密，永不上云）：
+**密码存储于 `~/.backup-password`**（chmod 600，不推 GitHub，不备份）：
 ```bash
-security add-generic-password -a "claude-code-source-backup" -s "claude-backup" -w "<password>"
+echo "<password>" > ~/.backup-password && chmod 600 ~/.backup-password
 ```
 
 ## 验收标准

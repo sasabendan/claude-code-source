@@ -1,7 +1,7 @@
 # 知识库索引
 
 最后更新：2026-04-25
-总条目：58
+总条目：59
 
 ## 经验知识 
 - [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 
@@ -32,6 +32,7 @@
 - [kb-rust 参考项目分析](experience/kb-rust-参考项目分析.md) - kb-rust,karpathy,nashsu,lucasastorian | 2026-04-25
 - [claude-file-safety](experience/claude-file-safety.md) - file-safety,删除判定,主线相关性,红灯绿灯,禁止自动删除 | 2026-04-26
 - [C-DEV 项目目录约束](experience/C-DEV-项目目录约束.md) - C-DEV,kb-rust,目录约束,测试数据,生产KB | 2026-04-26
+- [core-asset-protection](experience/core-asset-protection.md) - core-asset,HC-AP1,HC-AP2,HC-AP3,FC004,备份模型,禁止删除 | 2026-04-26
 - [GitHub 加密备份日志](experience/GitHub-加密备份日志.md) - github,backup,加密,enc,C11,核心资产 | 2026-04-26
 - [kb-rust v1 使用说明](experience/kb-rust-v1-使用说明.md) - kb-rust,v1,manual,smoke-test,目录映射 | 2026-04-26
 - [kb-rust v1 源码快照](experience/kb-rust-v1-源码快照.md) - kb-rust,v1,rust,source,snapshot,295行 | 2026-04-26

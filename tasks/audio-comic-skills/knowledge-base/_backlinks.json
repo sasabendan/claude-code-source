@@ -1,114 +1,17 @@
 {
-  "claude-export-markdown": [
-    "experience/有声漫画-Skills-全景图.md"
-  ],
-  "task-book-keeper": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/GitHub-加密备份日志.md",
-    "experience/encrypted-backup.md",
-    "skills/knowledge-base-manager.md"
-  ],
-  "claude-memory": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/GitHub-加密备份日志.md",
-    "experience/claude-first-check.md",
-    "experience/encrypted-backup.md"
-  ],
-  "有声漫画 Skills 全景图": [
-    "experience/kb-rust-归档迁移记录.md"
-  ],
-  "claude-usage": [
-    "experience/有声漫画-Skills-全景图.md"
-  ],
-  "encrypted-backup": [
-    "experience/claude-file-safety.md",
-    "experience/claude-memory.md",
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/GitHub-加密备份日志.md",
-    "experience/task-book-keeper.md"
-  ],
-  "comic-style-consistency": [
-    "experience/有声漫画-Skills-全景图.md",
-    "skills/self-optimizing-yield.md"
-  ],
-  "claude-error-handler": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/C-DEV-项目目录约束.md",
-    "experience/claude-scope-judge.md"
-  ],
   "minimax-usage": [
     "experience/有声漫画-Skills-全景图.md",
     "experience/claude-usage.md"
   ],
-  "kb-rust 归档迁移记录": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/C-DEV-项目目录约束.md",
-    "experience/GitHub-加密备份日志.md",
-    "skills/knowledge-base-manager.md"
+  "claude-usage": [
+    "experience/有声漫画-Skills-全景图.md"
   ],
   "GitHub 加密备份日志": [
     "experience/encrypted-backup.md"
   ],
-  "claude-file-safety": [
-    "experience/有声漫画-Skills-全景图.md"
-  ],
-  "supervision-anti-drift": [
-    "experience/有声漫画-Skills-全景图.md",
-    "skills/self-optimizing-yield.md"
-  ],
-  "claude-cite-reference": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/claude-export-markdown.md"
-  ],
-  "wikilinks": [
-    "experience/kb-rust-v1-源码快照.md",
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/kb-rust-v2-迁移备份（v1→v2）.md",
-    "experience/kb-rust-v2-需求文档.md",
-    "experience/kb-rust-v2-默认工作流模板.md",
-    "experience/kb-rust-参考项目分析.md"
-  ],
-  "claude-usage-monitor": [
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/claude-usage.md"
-  ],
-  "双向链接": [
-    "skills/knowledge-base-manager.md"
-  ],
-  "kb-rust v2": [
-    "skills/knowledge-base-manager.md"
-  ],
-  "_compiled/concepts/style-parameters.md": [
-    "skills/comic-style-consistency.md"
-  ],
-  "kb-rust v2 规格说明书": [
-    "experience/C-DEV-项目目录约束.md",
-    "experience/kb-rust-归档迁移记录.md"
-  ],
   "claude-values": [
     "experience/有声漫画-Skills-全景图.md",
     "experience/claude-scope-judge.md"
-  ],
-  "self-optimizing-yield": [
-    "experience/有声漫画-Skills-全景图.md",
-    "skills/supervision-anti-drift.md",
-    "skills/knowledge-base-manager.md",
-    "skills/comic-style-consistency.md"
-  ],
-  "claude-first-check": [
-    "experience/claude-values.md",
-    "experience/claude-memory.md",
-    "experience/有声漫画-Skills-全景图.md",
-    "experience/claude-error-handler.md",
-    "experience/claude-scope-judge.md"
-  ],
-  "audio-comic-workflow": [
-    "experience/有声漫画-Skills-全景图.md",
-    "skills/supervision-anti-drift.md",
-    "skills/knowledge-base-manager.md"
-  ],
-  "kb-rust v2 需求文档": [
-    "experience/C-DEV-项目目录约束.md"
   ],
   "claude-scope-judge": [
     "experience/claude-values.md",
@@ -118,14 +21,119 @@
     "experience/C-DEV-项目目录约束.md",
     "experience/claude-first-check.md"
   ],
-  "C-DEV 项目目录约束": [
+  "claude-export-markdown": [
+    "experience/有声漫画-Skills-全景图.md"
+  ],
+  "kb-rust v2 规格说明书": [
+    "experience/C-DEV-项目目录约束.md",
+    "experience/kb-rust-归档迁移记录.md"
+  ],
+  "双向链接": [
+    "skills/knowledge-base-manager.md"
+  ],
+  "kb-rust v2": [
+    "skills/knowledge-base-manager.md"
+  ],
+  "supervision-anti-drift": [
     "experience/有声漫画-Skills-全景图.md",
-    "experience/GitHub-加密备份日志.md"
+    "skills/self-optimizing-yield.md"
+  ],
+  "kb-rust v2 需求文档": [
+    "experience/C-DEV-项目目录约束.md"
+  ],
+  "claude-error-handler": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/C-DEV-项目目录约束.md",
+    "experience/core-asset-protection.md",
+    "experience/claude-scope-judge.md"
   ],
   "knowledge-base-manager": [
     "experience/有声漫画-Skills-全景图.md",
     "experience/claude-error-handler.md",
+    "experience/core-asset-protection.md",
     "experience/task-book-keeper.md",
     "skills/self-optimizing-yield.md"
+  ],
+  "_compiled/concepts/style-parameters.md": [
+    "skills/comic-style-consistency.md"
+  ],
+  "claude-first-check": [
+    "experience/claude-values.md",
+    "experience/claude-memory.md",
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/claude-error-handler.md",
+    "experience/claude-scope-judge.md"
+  ],
+  "task-book-keeper": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/core-asset-protection.md",
+    "experience/GitHub-加密备份日志.md",
+    "experience/encrypted-backup.md",
+    "skills/knowledge-base-manager.md"
+  ],
+  "有声漫画 Skills 全景图": [
+    "experience/kb-rust-归档迁移记录.md"
+  ],
+  "claude-usage-monitor": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/claude-usage.md"
+  ],
+  "C-DEV 项目目录约束": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/GitHub-加密备份日志.md"
+  ],
+  "kb-rust 归档迁移记录": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/C-DEV-项目目录约束.md",
+    "experience/GitHub-加密备份日志.md",
+    "skills/knowledge-base-manager.md"
+  ],
+  "wikilinks": [
+    "experience/kb-rust-v1-源码快照.md",
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/kb-rust-v2-迁移备份（v1→v2）.md",
+    "experience/kb-rust-v2-需求文档.md",
+    "experience/kb-rust-v2-默认工作流模板.md",
+    "experience/kb-rust-参考项目分析.md"
+  ],
+  "claude-file-safety": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/core-asset-protection.md"
+  ],
+  "core-asset-protection": [
+    "experience/有声漫画-Skills-全景图.md"
+  ],
+  "comic-style-consistency": [
+    "experience/有声漫画-Skills-全景图.md",
+    "skills/self-optimizing-yield.md"
+  ],
+  "self-optimizing-yield": [
+    "experience/有声漫画-Skills-全景图.md",
+    "skills/supervision-anti-drift.md",
+    "skills/knowledge-base-manager.md",
+    "skills/comic-style-consistency.md"
+  ],
+  "claude-cite-reference": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/claude-export-markdown.md"
+  ],
+  "audio-comic-workflow": [
+    "experience/有声漫画-Skills-全景图.md",
+    "skills/supervision-anti-drift.md",
+    "skills/knowledge-base-manager.md"
+  ],
+  "encrypted-backup": [
+    "experience/claude-file-safety.md",
+    "experience/claude-memory.md",
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/core-asset-protection.md",
+    "experience/GitHub-加密备份日志.md",
+    "experience/task-book-keeper.md"
+  ],
+  "claude-memory": [
+    "experience/有声漫画-Skills-全景图.md",
+    "experience/GitHub-加密备份日志.md",
+    "experience/claude-first-check.md",
+    "experience/encrypted-backup.md"
   ]
 }

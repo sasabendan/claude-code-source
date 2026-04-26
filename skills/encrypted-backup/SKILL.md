@@ -18,12 +18,13 @@
 
 ## 密码管理
 
-**密码存储于 macOS Keychain**（本地加密，永不上云）：
+**密码存储于 `~/.backup-password`**（chmod 600，不推 GitHub，不备份）：
 ```bash
 # 首次设置（只需一次）
-security add-generic-password -a "claude-code-source-backup" -s "claude-backup" -w "<password>"
+echo "<password>" > ~/.backup-password && chmod 600 ~/.backup-password
 
 # 脚本自动读取，无需每次输入
+cat ~/.backup-password
 ```
 
 ---
@@ -55,9 +56,9 @@ local_cleanup: success
 
 ## 核心流程
 
-1. **自动从 Keychain 读取密码**
+1. **自动从本地密码文件读取**
    ```bash
-   PASSWORD=$(security find-generic-password -s "claude-backup" -w)
+   PASSWORD=$(cat ~/.backup-password)
    ```
 
 2. **加密文件**
