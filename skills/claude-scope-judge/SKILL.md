@@ -1,6 +1,7 @@
 ---
 name: claude-scope-judge
 description: 行为和任务书约定范围不符时行为判定。触发条件：不确定某件事是否该做，是否在授权范围内。
+Do NOT use when: 用户的请求明确在主线任务范围内且有明确授权。行为和任务书约定明显不符时才触发。
 ---
 
 # Skill: claude-scope-judge（范围判定）

@@ -1,6 +1,7 @@
 ---
 name: claude-memory
 description: Claude 核心记忆仓库。当用户提及"你之前说过"、"我记得"、"密码在哪"、"API Key 在哪"、"帮我记住"、"你忘了吗"等场景时触发。负责存取 Claude 自身需要长期保留的关键信息（配置路径、关键决策摘要等）。绝不输出原始敏感值本身，只告知存放位置或指引查询方式。
+Do NOT use when: 用户问的是新问题而非存取已存储的信息。询问密码/API Key 时必须调用本 Skill。
 ---
 
 # Claude Memory（记忆仓库）

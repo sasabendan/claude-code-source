@@ -1,6 +1,9 @@
 ---
 name: claude-cite-reference
-description: Mark, save, and inject quoted reference snippets from prior Claude responses into the next turn of a conversation. Use this skill whenever the user wants to cite, quote, bookmark, pin, carry-forward, or re-reference part of an earlier Claude reply in a later turn. Triggers include phrases like "quote this part", "reference this answer", "引用这段", "带入下一轮", "mark this as #ref", "cite ref:X", "@ref:...", or any workflow that needs a stable ID for a snippet so it can be re-injected into context. Works in Claude Code CLI, Claude API workflows, and any filesystem-backed session. Do NOT use this skill for exporting or rendering conversations to Markdown files (use claude-export-markdown instead).
+description: Mark, save, and inject quoted reference snippets（引用/标记/保存 Claude 回复片段）。触发词："引用这段" / "cite ref:X" / "@ref:..." / "把这段记下来" / "mark this as #ref" / "quote this part" / "引用之前说的" / "carry forward" / "re-reference" / "re-inject"。Do NOT use when: from prior Claude responses into the next turn of a conversation. Use this skill whenever the user wants to cite, quote, bookmark, pin, carry-forward, or re-reference part of an earlier Claude reply in a later turn. Triggers include phrases like "quote this part", "reference this answer", "引用这段", "带入下一轮", "mark this as #ref", "cite ref:X", "@ref:...", or any workflow that needs a stable ID for a snippet so it can be re-injected into context. Works in Claude Code CLI, Claude API workflows, and any filesystem-backed session. Do NOT use this skill for exporting or rendering conversations to Markdown files (use claude-export-markdown instead).
+
+Do NOT use when: 用户说"保存整个对话历史"、"导出多轮对话"——应由 claude-export-markdown 处理。
+不要用于：一次性问题、关于 Claude 功能的基础咨询。
 ---
 
 # Claude Cite & Reference

@@ -1,6 +1,7 @@
 ---
 name: self-optimizing-yield
 description: 持续优化良品率，实现"贾维斯化"。当生产批次结束后自动触发。核心能力包括良品率指标体系、经验库（Obsidian 双链）、自动调优回路、反馈信号接入、防退化保护。
+Do NOT use when: 生产批次尚未结束，或良品率数据不足（C5 未满足）。
 ---
 
 # Skill: self-optimizing-yield（良品率优化）

@@ -1,6 +1,7 @@
 ---
 name: claude-usage
 description: Claude Code 使用量追踪与成本计算。当用户说"查看用量"、"查询消耗"、"成本统计"时触发。使用 phuryn/claude-usage 读取本地日志，提供今日/本周/全时段统计。
+Do NOT use when: 用户问的是 MiniMax 用量（应用 minimax-usage）。
 ---
 
 # Skill: claude-usage

@@ -1,6 +1,7 @@
 ---
 name: comic-style-consistency
 description: 解决 AI 生图和配音的风格漂移问题。当用户说"生成角色"、"保持画风"、"统一配音风格"、"风格锚定"时触发。核心能力包括角色/场景/画风锚定（LoRA 或 reference image 池），声音一致性（固定音色 ID + 情感参数模板）。支持本地和云端两种模式。
+Do NOT use when: 用户仅在查询已有风格参考，而非生成新内容。
 ---
 
 # Skill: comic-style-consistency（风格一致性）

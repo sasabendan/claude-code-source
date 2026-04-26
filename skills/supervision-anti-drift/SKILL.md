@@ -1,6 +1,7 @@
 ---
 name: supervision-anti-drift
 description: 所有环节的监督验收，防止执行偏离原始意图。当任何环节执行时自动包裹。核心能力包括 checkpoint 验收、漂移检测、审计日志、NCA 必要条件阻断。强制约束：openspec==0.21.0 禁止升级。
+Do NOT use when: 用户的请求是纯查询或读取操作，不涉及执行。
 ---
 
 # Skill: supervision-anti-drift（监督验收）

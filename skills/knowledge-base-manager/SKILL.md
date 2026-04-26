@@ -1,6 +1,7 @@
 ---
 name: knowledge-base-manager
 description: 本地知识库管理，用于原著细节记录、世界观设定、角色设定、参考资料查询。当用户说"查询知识库"、"更新经验"、"获取参考素材"、"添加知识"时触发。集成得到笔记 OpenAPI 和 GitHub 作为双数据源，采用增量式 Wiki 架构（非传统 RAG），支持 Obsidian 双链格式。所有知识库内容为核心资产。
+Do NOT use when: 用户想删除知识库条目（应用 claude-file-safety）。加密备份知识库（应用 encrypted-backup）。
 ---
 
 # Skill: knowledge-base-manager（知识库管理）

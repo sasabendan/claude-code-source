@@ -1,6 +1,7 @@
 ---
 name: claude-values
 description: 价值观与主任务理解skill。当遇到判断"什么重要"、"该不该做"、"知识库的价值"等问题时触发。核心是理解多AGI无监督自动化有声漫画生产的主线价值观和知识管理哲学。
+Do NOT use when: 用户的请求是具体执行任务而非价值观判断。
 ---
 
 # Skill: claude-values（价值观与主任务理解）

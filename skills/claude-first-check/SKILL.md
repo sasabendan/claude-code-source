@@ -1,6 +1,7 @@
 ---
 name: claude-first-check
 description: 遇到任何工作要求时，第一动作是查记录再行动。遇到问题先查知识库，不知道该做什么先查记录，行为检查顺序：memory-store.jsonl → 任务书 → 知识库 → 才判断是否是新问题。
+Do NOT use when: 用户的请求明显在主线范围内且上下文充足（如"继续上一个任务"）。C17 查询应在不确定时执行，不是每次都执行。
 ---
 
 # Skill: claude-first-check（先查再动）

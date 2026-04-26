@@ -1,6 +1,7 @@
 ---
 name: audio-comic-workflow
 description: 有声漫画全流程编排引擎，是主触发入口。当用户说"开始创作有声漫画"时触发。核心能力是 7 环节流水线编排：脚本 → 分镜 → 生图 → 配音 → 合成 → 排版 → 发布。支持断点续跑，全自动可中断。
+Do NOT use when: 用户只是想查询某个具体环节的信息，而非启动完整流水线。
 ---
 
 # Skill: audio-comic-workflow（有声漫画工作流）

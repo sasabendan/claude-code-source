@@ -1,6 +1,7 @@
 ---
 name: claude-usage-monitor
 description: Claude 额度监控与消耗计算。当用户说"查看额度"、"计算消耗"、"预估任务成本"时触发。根据任务类型和 token 消耗预估成本，帮助优化配额使用。
+Do NOT use when: 用户问的是 Claude Code 用量（应用 claude-usage）。
 ---
 
 # Skill: claude-usage-monitor（Claude 额度监控）

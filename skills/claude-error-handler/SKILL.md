@@ -1,6 +1,7 @@
 ---
 name: claude-error-handler
 description: 发生错误/不理解/不合理时使用的技能。触发条件：遇到任何错误、异常、违规、或不理解的系统行为。
+Do NOT use when: 用户描述的是正常操作而非错误（如"运行正常"、"符合预期"）。
 ---
 
 # Skill: claude-error-handler（错误处理）

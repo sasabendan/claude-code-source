@@ -1,6 +1,7 @@
 ---
 name: claude-file-safety
 description: 判断文件是否可安全删除。触发条件：需要删除任何文件时，先判断主线任务相关性和上下文影响再决定。
+Do NOT use when: 纯查询操作（查看/读取/搜索文件）不涉及删除。删除临时文件（*.tmp/*.bak/*.log）时仍建议检查，但非强制。
 ---
 
 # Skill: claude-file-safety（文件安全删除判定）

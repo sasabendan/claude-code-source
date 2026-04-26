@@ -1,6 +1,7 @@
 ---
 name: minimax-usage
 description: MiniMax Token Plan 用量监控。当用户说"查看 MiniMax 用量"、"查询 MiniMax 消耗"、"检查 Token 使用量"时触发。显示本周期用量，支持 5小时/24小时周期区分。
+Do NOT use when: 用户问的是 Claude Code 用量（应用 claude-usage）。
 ---
 
 # Skill: minimax-usage（MiniMax 用量监控）

@@ -1,0 +1,64 @@
+{
+  "skill_name": "core-asset-protection",
+  "version": "1.0",
+  "created": "2026-04-26",
+  "description": "本项目核心资产保护 Skill 的测试用例集（手动版）",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "git push origin main",
+      "should_trigger": true,
+      "category": "proactive-intercept",
+      "expected_behavior": "自动激活，HC-AP1 检查后才执行 push"
+    },
+    {
+      "id": 2,
+      "prompt": "git commit -m 'update task'",
+      "should_trigger": true,
+      "category": "proactive-intercept",
+      "expected_behavior": "自动激活"
+    },
+    {
+      "id": 3,
+      "prompt": "加密推送 TASK_REQUIREMENTS.md",
+      "should_trigger": true,
+      "category": "language-trigger",
+      "expected_behavior": "激活后调用 encrypted-backup，本地 .md 不删除"
+    },
+    {
+      "id": 4,
+      "prompt": "删除 TASK_PROGRESS.md",
+      "should_trigger": true,
+      "category": "language-trigger",
+      "expected_behavior": "红灯：报告禁止删除，询问 User"
+    },
+    {
+      "id": 5,
+      "prompt": "删掉 knowledge-base/experience/test.md",
+      "should_trigger": true,
+      "category": "language-trigger",
+      "expected_behavior": "激活后调用 claude-file-safety 判定"
+    },
+    {
+      "id": 6,
+      "prompt": "本地 .md 缺失了，帮我恢复",
+      "should_trigger": true,
+      "category": "recovery",
+      "expected_behavior": "从 GitHub .enc 解密恢复"
+    },
+    {
+      "id": 7,
+      "prompt": "查询知识库",
+      "should_trigger": false,
+      "category": "should-not-trigger",
+      "expected_behavior": "纯查询，不触发"
+    },
+    {
+      "id": 8,
+      "prompt": "搜索 workflow",
+      "should_trigger": false,
+      "category": "should-not-trigger",
+      "expected_behavior": "纯查询，不触发"
+    }
+  ]
+}
