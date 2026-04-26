@@ -91,3 +91,19 @@ orphans_after: 34  # 策略一不降低孤立数，待策略二
 - [[knowledge-base-manager]]：关联目标来源
 - [[skill-creator]]：触发测试
 - [[claude-file-safety]]：下载文件判定（孤立但无价值 → 建议删除）
+---
+
+## 版本历史
+
+### v1.1 (2026-04-26) ← 当前
+
+**变更**：
+- Review 后更新：明确两种策略（outbound vs inbound link）
+- 新增：策略一（outbound）不降低孤立数的发现
+- 新增：策略二（hub → orphan inbound）待实现
+
+**前置版本**（不可覆盖）：
+
+### v1.0 (2026-04-26)
+- 初始版本：策略一定义（给孤立页面加 outbound link）
+- auto-link.py 脚本完成：33/35 页面添加成功

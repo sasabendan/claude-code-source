@@ -96,3 +96,15 @@ TASK_PROGRESS.md（任务进度表）
 ## 代码入口
 
 `skills/task-book-keeper/scripts/backup.sh`
+---
+
+## 版本历史
+
+### v1.1 (2026-04-26) ← 当前
+
+**变更**：
+- description 更新：移除"加密推送"触发词（由 encrypted-backup 代理）
+- 新增 Do NOT use when 子句
+- 新增 HC-AP1 约束引用
+- 新增[[encrypted-backup]] Skill 引用
+- 新增 FC004 已知错误案例

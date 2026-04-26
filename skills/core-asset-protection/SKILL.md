@@ -98,3 +98,20 @@ openssl enc -aes-256-cbc -d -pbkdf2 \
 - [[task-book-keeper]]：任务书管理，核心资产子类
 - [[knowledge-base-manager]]：知识库管理，核心资产子类
 - [[claude-error-handler]]：FC004 记录（C17→C19 执行链）
+---
+
+## 版本历史
+
+### v1.1 (2026-04-26) ← 当前
+
+**变更**：
+- description 重写：从问答式改为 Proactive Guardrail 定位
+- 新增自动化拦截机制：任何 push/commit/删除 操作前自动激活
+- 新增 Do NOT use when 子句
+- HC-AP1/2/3 约束体系明确化
+
+**前置版本**（不可覆盖）：
+
+### v1.0 (2026-04-26)
+- 初始版本：FC004 根因补救建立
+- 3 硬约束（HC-AP1/2/3）+ 操作规程

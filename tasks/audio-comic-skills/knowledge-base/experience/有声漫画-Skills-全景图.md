@@ -2,15 +2,17 @@
 name: 有声漫画 Skills 全景图
 entry_type: experience
 created: 2026-04-26T00:40:31.000000+00:00
-updated: 2026-04-26T00:40:31.000000+00:00
+updated: 2026-04-26T04:00:00.000000+00:00
 tags: [skills,overview,全景图,角色分工,监工]
 status: stable
 ---
 
 # 有声漫画 Skills 全景图
 
-> 版本：1.3 | 更新：2026-04-26
+> 版本：1.4 | 更新：2026-04-26
 > 用途：监工（Claude）掌握所有角色分工，便于价值观判断和优先级决策
+> 对应 Skill：`skills/kb-overview-supervisor/SKILL.md`（KB 管理监工，所有 KB 操作前必须调用）
+> 相关：[[kb-overview-supervisor]]
 
 ---
 
@@ -34,10 +36,11 @@ status: stable
 | [[self-optimizing-yield]] | 良品率追踪、反馈闭环、调优回路 | 每批次结束自动触发 | 良品率数据 |
 | [[knowledge-base-manager]] | 知识库管理、增量Wiki、Obsidian双链 | 「查询知识库」等 | Biji API（远期） |
 
-### 二、元技能（6个，AI 行为规范）
+### 二、元技能（7个，AI 行为规范）
 
 | Skill | 职责 | 触发时机 |
 |-------|------|---------|
+| [[kb-overview-supervisor]] | KB 监工，所有知识库操作前调用 | KB 操作前 / 「查全景图」/ 「KB 状态」 |
 | [[claude-scope-judge]] | 范围判定，红灯/绿灯通行 | 不确定是否在授权范围内时 |
 | [[claude-first-check]] | 先查再动，7步检查顺序 | 任何工作要求的第一动作 |
 | [[claude-error-handler]] | C17→C19→C20→C23 强制链条 | 遇到错误/不理解/不合理时 |
@@ -131,9 +134,9 @@ status: stable
 | 维度 | 状态 | 说明 |
 |------|------|------|
 | kb-rust 工具链 | ✅ v2.1.1 就绪 | 14 命令，auto-rebuild 生效 |
-| 知识库入口 | ✅ 总条目 59 条 | _index.md 和 .index.jsonl 同步 |
-| 双链图谱 | ⚠️ 1 backlink target | 页面无 [[wikilinks]]，待补 |
-| Skills 全景图 | ✅ 21 条 KB 条目 | 本文档 |
+| 知识库入口 | ✅ 总条目 61 条 | _index.md 和 .index.jsonl 同步 |
+| 双链图谱 | ⚠️ 34 孤立页面 | 策略一完成（Skills inbound ↑），策略二（hub→orphan）待实现 |
+| Skills 总计 | ✅ 21 Skills | 5 生产 + 7 元 + 9 工具 |
 | 备份机制 | ✅ HC-AP1/2/3 + encrypted-backup | 核心资产保护体系（FC004 后加固） |
 | 良品率闭环 | ❌ 未实际运行 | 依赖生产流水线真实运转 |
 
@@ -145,3 +148,38 @@ status: stable
 - 项目管理文件（SPEC/CHANGELOG） → `~/.backup/audio-comic-skills/kb-rust/archive/`
 - 当前工作版本 → `kb-rust/v2/` 项目目录
 - 迁移记录 → [[kb-rust 归档迁移记录]]
+
+---
+
+## 版本历史
+
+### v1.4 (2026-04-26) ← 当前
+
+**变更**：
+- 新增 `kb-overview-supervisor` Skill → `skills/kb-overview-supervisor/SKILL.md`
+- 元技能：6→7 个（+kb-overview-supervisor）
+- 版本历史规则确立：版本号不覆盖，只追加（changelog 倒序保留历史）
+- 已知完成度更新：61 条目、34 孤立（策略一完成）
+
+**前置版本**（不可覆盖，保留历史）：
+
+**前置版本**（不可覆盖，保留历史）：
+
+### v1.3 (2026-04-26)
+- 工具技能新增 `kb-auto-linker`（知识库双链自动关联）
+- Skill 总计：20 个
+- 触发描述标准化完成（16/19 Skills 含 Do NOT use when）
+
+### v1.2 (2026-04-26)
+- skill-creator 入列元技能
+- 元技能：5→6 个
+- Skill 总计：19 个
+
+### v1.1 (2026-04-26)
+- 全链路上游 Skills KB 条目完成（18 Skills 全录入）
+- HC-AP1/2/3 约束体系建立
+- 全景图文档化
+
+### v1.0 (2026-04-26)
+- 初始版本：18 Skills（5 生产 + 5 元 + 8 工具）
+- 三类角色分工确立
