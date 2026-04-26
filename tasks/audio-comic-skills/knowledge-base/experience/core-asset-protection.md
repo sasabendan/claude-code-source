@@ -61,3 +61,12 @@ status: stable
 - [[task-book-keeper]]：任务书保护，核心资产子类
 - [[knowledge-base-manager]]：知识库保护，核心资产子类
 - [[claude-error-handler]]：FC004 记录在案
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-26)
+- 初始版本：FC004 根因补救建立
+- 定位：核心资产保护 + HC-AP1/2/3 约束体系
+- 首次创建 KB 条目

@@ -84,3 +84,12 @@ openssl enc -aes-256-cbc -d -pbkdf2 -in file.md.enc -out file.md -pass file:~/.b
 - [[C-DEV 项目目录约束]] — 测试目录不适用本规则
 - [[claude-memory]] — 密码位置记录在 memory-store.jsonl
 - [[kb-rust 归档迁移记录]] — kb-rust 归档不在 GitHub（本地备份 `~/.backup/`）
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-26)
+- 初始版本：归并历史手动备份记录
+- 记录 commit eb25e11 / a4dc828 / 20c92d8 / cedea55 / 4f928ed
+- C0 auto-backup 自 2026-04-25 19:40 起每 5 分钟

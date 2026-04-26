@@ -45,3 +45,7 @@ status: stable
 - walkdir / chrono / serde_json / serde_yaml / regex（均已引入）
 - reqwest/tokio（可选，biji feature，默认不启用）
 
+
+---
+
+> **版本说明**：本条目为 `kb-rust/v2/REQUIREMENTS_V2.md` 的引用说明，版本历史以源文档为准。

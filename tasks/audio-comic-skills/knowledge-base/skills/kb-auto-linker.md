@@ -42,3 +42,15 @@ status: stable
 - [[skill-creator]]：触发测试流程
 - [[audio-comic-workflow]]：主要 inbound link 接收方
 - [[supervision-anti-drift]]：NCA/Pipeline 相关孤立页面指向目标
+
+---
+
+## 版本历史
+
+### v1.1 (2026-04-26)
+- v1.1 更新：Review 后明确脱孤机制（inbound vs outbound）
+- 策略一定义完成，策略二待实现
+
+### v1.0 (2026-04-26)
+- 初始版本：skill-creator 流程 Draft → Test → Review 完成
+- 孤立页面 35→34，Skills inbound +33

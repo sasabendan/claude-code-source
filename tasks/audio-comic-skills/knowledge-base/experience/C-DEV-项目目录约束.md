@@ -59,3 +59,12 @@ status: stable
 - [[kb-rust 归档迁移记录]]
 - [[claude-error-handler]]（C17/C19/C23 执行链）
 - [[claude-scope-judge]]（范围判定）
+
+---
+
+## 版本历史
+
+### v2.1.1 (2026-04-26)
+- v2.1.1 更新：C-DEV 项目目录约束正式确立
+- 测试目录（knowledge-base-test/ + kb-v2-test/）标注为开发测试数据
+- 归档原则：归档文件存 ~/.backup/
