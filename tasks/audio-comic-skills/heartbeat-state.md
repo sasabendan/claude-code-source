@@ -1,20 +1,20 @@
 # Heartbeat State
 
-last_heartbeat_at: 2026-04-30T17:05:00
-last_session_end_at: 2026-04-30T16:50:00
+last_heartbeat_at: 2026-04-30T18:55:00
+last_session_end_at: 2026-04-30T18:55:00
 session_gap_minutes: 0
-last_heartbeat_result: C4-POSTTOOLUSE-HOOK-ACTIVE
+last_heartbeat_result: BR-003 方案A 授权 + Codex 桌面版状态已记录，等待明日口令触发
 
 ## 每日授权
-- 2026-04-30: 分支任务 #BR-001/#BR-002 + 主线技术债务推进（已授权）
+- 2026-04-30: BR-001/#BR-002 ✅完成 + BR-003 Supervisor-Worker多Agent流水线（方案A）已授权；主线技术债务推进（已授权）
 
 ## 当前主线节点
-current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + SessionStart Hook 已配置；Skills 层 CWD 自适应改造完成（claude-first-check / knowledge-base-manager / audio-comic-workflow / self-optimizing-yield）；新增 Rust LLM Wiki 技术栈调研 + bkywksj/knowledge-base 参考研究；新增 constraints/ 约束元数据库（11 个约束定义 + query.sh）；技术债务：C1 Rust 重写 / C5 OpenSpec / 得物笔记 API 接入 / pdf-ingest 实现 / kb AI 问答 / PreToolUse Hook 配置 / 20个SKILL.md补版本历史规则；分支任务：#BR-001 PreToolUse Hook×约束执行路径 / #BR-002 约束元数据库建设
+current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + PreToolUse Hook 配置完成（含版本历史/危险命令/HC-AP/HC-API）；20/24 SKILL.md 版本历史嵌入；constraints/ 约束元数据库（11个YAML）；BR-003：Supervisor-Worker 多Agent流水线（Claude Code Supervisor + Codex CLI Worker），等待用户口令触发
 
 ## 技术债务状态
 - C0 自动备份: ✅ cron运行中（*/5 * * * *）每5分钟，SessionStart Hook已配置
 - C1 Rust 重写: ✅ kb-rust-v2存在（738KB），AI问答/知识图谱可视化待加
-- C5 OpenSpec v0.21.0: ⚠️ 参考文档存在，安装未执行
+- C5 OpenSpec v0.21.0: ⬜ Supervisor-Worker 框架文档完整（KB 6条目），执行路径断裂；方案A已授权（等待Codex CLI安装）
 - GetBiji API 接入: ⬜ S1双数据源之一，reference-02-biji-api.md已整理
 - pdf-ingest: ⬜ SKILL.md存在，脚本未实现（参考bkywksj/knowledge-base）
 - 5个Skills缺scripts/: ⬜ claude-usage/core-asset-protection/encrypted-backup/kb-overview-supervisor/pdf-ingest
@@ -105,3 +105,56 @@ current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + Se
 |------|---------|
 | [[C23]] | 补技能不补约束（constraints/ 是工具不是约束） |
 | [[version-history]] | 本身也是约束，嵌入所有 SKILL.md |
+
+### 分支任务 #BR-003：Supervisor-Worker 多Agent流水线（方案A）
+- **分支来源**：compound-engineering-plugin 审查 + 方案A决策
+- **创建时间**：2026-04-30
+- **状态**：⏸️ 暂停（等待用户口令"codex"触发）
+
+#### 方案A 目标
+实现真正的 Claude Code Supervisor + Codex Worker 多Agent并行流水线：
+1. ⬜ 安装 Codex CLI（桌面版已安装，CLI 待装）
+2. ⬜ 配置 OpenSpec MCP server
+3. ⬜ 建立三记忆文件：tasks.md / feature_list.json / progress.txt
+4. ⬜ git worktree 多线程并行基础设施（参考 /ce-work）
+5. ⬜ supervision-anti-drift 更新为三记忆文件实现
+6. ⬜ 确权四步接入执行路径（勾选/更新/passes/git commit/progress.txt）
+
+#### 已知断裂点
+- Codex CLI 未安装（桌面版已有）
+- 三记忆文件未部署（orchestrator/BUILD_LOG.md 是调研记录非运行状态）
+- OpenSpec MCP server 未配置
+- 无 git worktree 并行基础设施
+
+#### Supervisor-Worker 框架（已有约定）
+- Supervisor = Claude Code：派发任务、验收确权、更新状态
+- Worker = Codex：只写代码 + 制作可复现测试方案
+- 禁止 Worker：勾选 tasks.md、修改 feature_list.json、声明 PASS/FAIL
+- 三记忆文件：tasks.md（过程）/ feature_list.json（验收）/ progress.txt（交接）
+- 确权四步：勾选→passes=true→git commit→写 progress.txt
+- run-folder：`run-<run#>__task-<id>__ref-<ref>__<ts>/`，历史永不覆盖
+
+#### 关联主线节点
+- 所属主线：技术债务 → 能力构建部分 → C5 OpenSpec 技术债修复
+- 并入主线触发条件：Codex CLI 安装完成 + 三记忆文件部署完成
+
+#### 相关约束链接
+| 约束 | 关联内容 |
+|------|---------|
+| [[C17]] | Supervisor 派发前先查询任务书 |
+| [[C19]] | 违规记录到 KB（feature_list.json 验收可作为证据）|
+| [[version-history]] | 三记忆文件每次变更需追加记录 |
+| [[hc-ap]] | Codex Worker 操作不得删除核心资产 |
+
+#### 相关 Skill 链接
+| Skill | 关联内容 |
+|-------|---------|
+| [[supervision-anti-drift]] | 升级为三记忆文件实现，确权四步接入 |
+| [[skill-creator]] | 建立 openspec/ Skill 目录 |
+| [[audio-comic-workflow]] | Supervisor-Worker 融入流水线编排 |
+| [[self-optimizing-yield]] | 每次迭代经验自动蒸馏 |
+
+#### compound-engineering-plugin 借鉴
+- `/ce-work` git worktree 多线程（直接参考）
+- `/ce-compound-refresh` 经验刷新机制
+- 50+ Agents 分层体系（规模参考，不照搬）
