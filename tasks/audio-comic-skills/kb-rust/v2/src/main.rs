@@ -62,69 +62,14 @@ impl KbManager {
     fn overview_path(&self) -> PathBuf { self.compiled_dir.join("_overview.md") }
     fn backlinks_path(&self) -> PathBuf { self.kb_dir.join("_backlinks.json") }
 
-    fn ensure_index_exists(&self) -> std::io::Result<()> {
-        let path = self.index_path();
-        if !path.exists() { fs::File::create(path)?; }
-        Ok(())
-    }
-
     fn load_index(&self) -> Vec<KbEntry> {
         let path = self.index_path();
         if !path.exists() { return vec![]; }
         let content = fs::read_to_string(&path).unwrap_or_default();
         content.lines()
             .filter(|l| !l.trim().is_empty())
-            .filter_map(|l| serde_json::from_str::<KbEntry>(l).ok())
+            .filter_map(|l| serde_json::from_str(l).ok())
             .collect()
-    }
-
-    fn add_entry(&self, entry: &KbEntry) -> std::io::Result<()> {
-        let mut f = fs::OpenOptions::new().create(true).append(true).open(self.index_path())?;
-        let line = serde_json::to_string(entry).unwrap();
-        f.write_all(line.as_bytes())?;
-        f.write_all(b"\n")
-    }
-
-    fn init_v2(&self) -> std::io::Result<()> {
-        // Non-destructive: only create if missing (idempotent)
-        for sub in &["characters","world","plot","styles","voices","experience"] {
-            fs::create_dir_all(self.kb_dir.join(sub))?;
-        }
-        fs::create_dir_all(&self.compiled_dir)?;
-        for sub in &["entities","concepts","synthesis"] {
-            fs::create_dir_all(self.compiled_dir.join(sub))?;
-        }
-        self.ensure_index_exists()?;
-        // Ensure _log.md header exists (non-destructive)
-        if !self.log_path().exists() {
-            fs::write(&self.log_path(), "# 知识库操作日志\n\n")?;
-        }
-        Ok(())
-    }
-
-    fn ensure_project(&self) -> std::io::Result<()> {
-        if !self.project_path().exists() {
-            let meta = ProjectMeta {
-                name: "audio-comic-skills".to_string(),
-                created: chrono::Utc::now().to_rfc3339(),
-                description: "有声漫画自动化生产知识库".to_string(),
-                version: "2.0.0".to_string(),
-            };
-            let s = serde_json::to_string_pretty(&meta).unwrap();
-            fs::write(self.project_path(), s)?;
-        }
-        Ok(())
-    }
-
-    fn append_log(&self, entry_type: &str, description: &str) -> std::io::Result<()> {
-        fs::create_dir_all(&self.compiled_dir)?;
-        if !self.log_path().exists() {
-            fs::write(&self.log_path(), "# 知识库操作日志\n\n")?;
-        }
-        let now = chrono::Local::now().format("%Y-%m-%d %H:%M:%S");
-        let line = format!("## [{}] {} | {}\n\n", now, entry_type, description);
-        fs::OpenOptions::new().append(true).open(&self.log_path())?
-            .write_all(line.as_bytes())
     }
 
     fn load_backlinks(&self) -> HashMap<String, Vec<String>> {
@@ -135,68 +80,112 @@ impl KbManager {
             .unwrap_or_default()
     }
 
-    fn save_backlinks(&self, bl: &HashMap<String, Vec<String>>) -> std::io::Result<()> {
-        let s = serde_json::to_string_pretty(bl).unwrap();
-        fs::write(self.backlinks_path(), s)
+    fn save_backlinks(&self, backlinks: &HashMap<String, Vec<String>>) -> std::io::Result<()> {
+        let json = serde_json::to_string_pretty(backlinks)?;
+        fs::write(&self.backlinks_path(), json)
+    }
+
+    fn init_v2(&self) -> std::io::Result<()> {
+        for dir in &["experience","styles","plot","world","voices","characters","_compiled"] {
+            fs::create_dir_all(self.kb_dir.join(dir))?;
+        }
+        if !self.index_path().exists() {
+            fs::File::create(&self.index_path())?;
+        }
+        self.ensure_project()
+    }
+
+    fn ensure_project(&self) -> std::io::Result<()> {
+        if self.project_path().exists() { return Ok(()); }
+        let meta = ProjectMeta {
+            name: "audio-comic-skills".to_string(),
+            created: chrono::Utc::now().to_rfc3339(),
+            description: "有声漫画 Skills 知识库".to_string(),
+            version: "2.2.0".to_string(),
+        };
+        let json = serde_json::to_string_pretty(&meta)?;
+        fs::write(&self.project_path(), json)
+    }
+
+    fn add_entry(&self, entry: &KbEntry) -> std::io::Result<usize> {
+        let path = self.index_path();
+        let mut entries = self.load_index();
+        entries.retain(|e| e.name != entry.name);
+        entries.push(entry.clone());
+        let count = entries.len();
+        let mut f = fs::File::create(&path)?;
+        for e in &entries {
+            let line = serde_json::to_string(e).unwrap();
+            f.write_all(line.as_bytes())?;
+            f.write_all(b"\n")?;
+        }
+        Ok(count)
+    }
+
+    fn append_log(&self, action: &str, detail: &str) -> std::io::Result<()> {
+        fs::create_dir_all(&self.compiled_dir)?;
+        let now = chrono::Local::now().format("%Y-%m-%d %H:%M");
+        let entry = format!("## [{}] {} | {}\n", now, action, detail);
+        let existing = fs::read_to_string(&self.log_path()).unwrap_or_default();
+        fs::write(&self.log_path(), existing + &entry)
     }
 
     fn rebuild_index_v2(&self) -> std::io::Result<usize> {
-        let mut entries = vec![];
         let mut backlinks: HashMap<String, Vec<String>> = HashMap::new();
-        let wikilink_re = Regex::new(r"\[\[([^\]]+)\]\]").unwrap();
+        let wiki_dirs = ["experience","styles","plot","world","voices","characters"];
 
-        for entry in WalkDir::new(&self.kb_dir)
-            .follow_links(true)
-            .into_iter().filter_map(|e| e.ok())
-        {
-            let path = entry.path();
-            if !path.is_file() { continue; }
-            let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
-            if ext != "md" { continue; }
-            let fname = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
-            if fname.starts_with('.') || fname == "WORKFLOW.md" { continue; }
-            let path_str = path.to_str().unwrap_or("");
-            if path_str.contains("/_compiled/") { continue; }
+        let mut entries = self.load_index();
 
-            let content = fs::read_to_string(path).unwrap_or_default();
-            // Fallback to filename (without .md) if no frontmatter name and no # heading
-            let raw_name = extract_title(&content);
-            let name = if raw_name.is_empty() {
-                fname.trim_end_matches(".md").to_string()
-            } else {
-                raw_name
-            };
-            let entry_type = infer_type(path);
-            let tags = extract_tags(&content);
-            let created = extract_created(&content);
-            let updated = extract_updated(&content);
-            let status = extract_status(&content);
-            let sources = extract_sources(&content);
-            let rel = path.strip_prefix(&self.kb_dir).ok()
-                .and_then(|p| p.to_str()).map(|s| s.to_string());
+        for dir in &wiki_dirs {
+            let dir_path = self.kb_dir.join(dir);
+            if !dir_path.exists() { continue; }
+            for entry in WalkDir::new(&dir_path).into_iter().filter_map(|e| e.ok()) {
+                let path = entry.path();
+                if !path.is_file() || path.extension().and_then(|e| e.to_str()) != Some("md") { continue; }
+                let content = fs::read_to_string(path).unwrap_or_default();
 
-            for cap in wikilink_re.captures_iter(&content) {
-                let target = cap.get(1).unwrap().as_str().trim().to_string();
-                if let Some(ref rel) = rel {
-                    let targets = backlinks.entry(target).or_insert_with(Vec::new);
-                    if !targets.contains(rel) {
-                        targets.push(rel.clone());
+                // Parse frontmatter and title
+                let name = extract_title(&content).trim().to_string();
+                let file_rel = path.strip_prefix(&self.kb_dir).unwrap_or(path).to_string_lossy().replace('\\', "/");
+                let tags = extract_tags(&content);
+                let created = extract_created(&content);
+                let updated = extract_updated(&content);
+                let status = extract_status(&content);
+                let sources = extract_sources(&content);
+
+                // Scan for [[wikilinks]]
+                let wiki_link_re = Regex::new(r"\[\[([^\]]+)\]\]").unwrap();
+                let links_in_file: Vec<String> = wiki_link_re.captures_iter(&content)
+                    .map(|c| c.get(1).unwrap().as_str().trim().to_string())
+                    .filter(|l| !l.is_empty())
+                    .collect();
+
+                for target in &links_in_file {
+                    let safe_target = sanitize_filename(target);
+                    let entry_for_target = backlinks.entry(safe_target.clone()).or_insert_with(Vec::new);
+                    if !entry_for_target.contains(&file_rel) {
+                        entry_for_target.push(file_rel.clone());
                     }
                 }
-            }
 
-            entries.push(KbEntry {
-                entry_type,
-                name,
-                file: rel,
-                tags,
-                created,
-                updated,
-                status,
-                sources,
-                backlinks: vec![],
-                extra: HashMap::new(),
-            });
+                // Update or insert (replace if exists, push if new)
+                let safe_name = sanitize_filename(&name);
+                entries.retain(|e| sanitize_filename(&e.name) != safe_name);
+
+                let kb_entry = KbEntry {
+                    entry_type: dir.to_string(),
+                    name: if name.is_empty() { sanitize_filename(path.file_stem().unwrap_or_default().to_str().unwrap_or("")) } else { name },
+                    file: Some(file_rel),
+                    tags,
+                    created: if created.is_empty() { chrono::Utc::now().to_rfc3339() } else { created },
+                    updated,
+                    status,
+                    sources,
+                    backlinks: vec![],
+                    extra: HashMap::new(),
+                };
+                entries.push(kb_entry);
+            }
         }
 
         entries.sort_by(|a, b| {
@@ -320,7 +309,152 @@ impl KbManager {
             Ok("Biji sync: requires --features biji".to_string())
         }
     }
+
+    fn get_entry(&self, name: &str) -> Option<KbEntry> {
+        let safe = sanitize_filename(name);
+        self.load_index().into_iter()
+            .find(|e| sanitize_filename(&e.name) == safe)
+    }
+
+    fn read_entry_file(&self, entry: &KbEntry) -> String {
+        if let Some(ref file_rel) = entry.file {
+            let path = self.kb_dir.join(file_rel);
+            fs::read_to_string(&path).unwrap_or_default()
+        } else {
+            String::new()
+        }
+    }
 }
+
+// ─── BM25 搜索模块 ───────────────────────────────
+
+const BM25_K1: f64 = 1.5;
+const BM25_B: f64 = 0.75;
+
+/// 中文字符 n-gram 分词（2-gram）
+fn tokenize_cn(text: &str) -> Vec<String> {
+    let chars: Vec<char> = text.chars().collect();
+    let mut tokens = Vec::new();
+    for i in 0..chars.len() {
+        if chars[i].is_ascii_alphabetic() || chars[i].is_ascii_digit() {
+            // 英文/数字：按空格分割
+            let mut word = String::new();
+            while i < chars.len() && (chars[i].is_ascii_alphabetic() || chars[i].is_ascii_digit() || chars[i] == '-') {
+                word.push(chars[i]);
+            }
+            if !word.is_empty() {
+                tokens.push(word.to_lowercase());
+            }
+        } else if chars[i].is_ascii_whitespace() {
+            // 跳过空白
+        } else {
+            // 中文/其他：2-gram
+            if i + 1 < chars.len() {
+                let bigram = format!("{}{}", chars[i], chars[i+1]);
+                tokens.push(bigram);
+            } else {
+                tokens.push(chars[i].to_string());
+            }
+        }
+    }
+    tokens
+}
+
+struct Bm25Doc {
+    name: String,
+    entry_type: String,
+    file: Option<String>,
+    tags: String,
+    tokens: Vec<String>,
+    raw_text: String,
+}
+
+struct Bm25Index {
+    docs: Vec<Bm25Doc>,
+    doc_count: usize,
+    avg_dl: f64,
+    idf: HashMap<String, f64>,
+}
+
+impl Bm25Index {
+    fn build(entries: &[KbEntry], kb_dir: &PathBuf) -> Self {
+        let mut docs = Vec::new();
+
+        for e in entries {
+            let raw_text = format!("{} {} {}", e.name, e.tags, e.file.as_deref().unwrap_or(""));
+            let tokens = tokenize_cn(&raw_text);
+            docs.push(Bm25Doc {
+                name: e.name.clone(),
+                entry_type: e.entry_type.clone(),
+                file: e.file.clone(),
+                tags: e.tags.clone(),
+                tokens,
+                raw_text,
+            });
+        }
+
+        let doc_count = docs.len();
+        let total_tokens: usize = docs.iter().map(|d| d.tokens.len()).sum();
+        let avg_dl = if doc_count > 0 { total_tokens as f64 / doc_count as f64 } else { 1.0 };
+
+        // IDF: log((N - n + 0.5) / (n + 0.5))
+        let mut df: HashMap<String, usize> = HashMap::new();
+        for d in &docs {
+            let mut seen = std::collections::HashSet::new();
+            for t in &d.tokens {
+                if !seen.contains(t) {
+                    *df.entry(t.clone()).or_insert(0) += 1;
+                    seen.insert(t.clone());
+                }
+            }
+        }
+
+        let mut idf = HashMap::new();
+        for (token, df_val) in &df {
+            let n = *df_val as f64;
+            let idf_val = ((doc_count as f64 - n + 0.5) / (n + 0.5)).ln().max(0.0);
+            idf.insert(token.clone(), idf_val);
+        }
+
+        Bm25Index { docs, doc_count, avg_dl, idf }
+    }
+
+    fn search(&self, query: &str) -> Vec<(String, String, String, f64)> {
+        let query_tokens = tokenize_cn(query);
+        if query_tokens.is_empty() {
+            return vec![];
+        }
+
+        let mut results = Vec::new();
+
+        for d in &self.docs {
+            let mut score = 0.0;
+            let dl = d.tokens.len() as f64;
+            let mut term_freqs: HashMap<&String, usize> = HashMap::new();
+            for t in &d.tokens {
+                *term_freqs.entry(t).or_insert(0) += 1;
+            }
+
+            for qt in &query_tokens {
+                let tf = term_freqs.get(qt).copied().unwrap_or(0) as f64;
+                if tf == 0.0 { continue; }
+                let idf_val = *self.idf.get(qt).unwrap_or(&0.0);
+                let numerator = tf * (BM25_K1 + 1.0);
+                let denominator = tf + BM25_K1 * (1.0 - BM25_B + BM25_B * dl / self.avg_dl);
+                score += idf_val * numerator / denominator;
+            }
+
+            if score > 0.0 {
+                results.push((d.name.clone(), d.entry_type.clone(), d.tags.clone(), score));
+            }
+        }
+
+        results.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap_or(std::cmp::Ordering::Equal));
+        results
+    }
+}
+
+// ─── 辅助函数 ─────────────────────────────────────
 
 fn infer_type(path: &std::path::Path) -> String {
     let parent = path.parent().and_then(|p| p.file_name())
@@ -441,20 +575,21 @@ fn sanitize_filename(name: &str) -> String {
 }
 
 fn print_usage() {
-    println!("kb-rust v2: LLM Wiki Manager (Karpathy method)");
+    println!("kb-rust v2.2: LLM Wiki Manager (Karpathy method)");
     println!();
     println!("v1 compatible commands:");
     println!("  init        Init KB structure (v2: _compiled/ + .project.json)");
     println!("  add <name> <type> <tags>  Add entry");
     println!("  list        List all entries by type");
     println!("  query <type>  Query by type");
-    println!("  search <kw>  Full-text search");
+    println!("  search <kw>  BM25 full-text search (name + tags + content)");
     println!("  rebuild     Rebuild index (v2: + backlinks parsing)");
     println!();
     println!("v2 new commands:");
     println!("  workflow         Output WORKFLOW.md");
     println!("  chars            List all characters with status");
     println!("  backlinks <target>  Find files linking to target");
+    println!("  get <name>       Get entry details (Level 2 Progressive Disclosure)");
     println!("  project-info     Output project metadata");
     println!("  sync-biji        Sync GetBiji API (needs --features biji)");
     println!("  lint             Health check (orphans / bad entries / backlinks)");
@@ -473,21 +608,31 @@ fn main() {
 
     let mut kb_dir_str = "knowledge-base".to_string();
     let mut cmd_idx = 1;
-    for (i, arg) in args.iter().enumerate() {
-        if arg == "--kb-dir" && i+1 < args.len() {
-            kb_dir_str = args[i+1].clone();
-            cmd_idx = i + 2;
+
+    // 处理全局 flag：--kb-dir 和 --help（跳过所有 flag，第一个非 flag 才是命令）
+    let mut i = 1;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--kb-dir" | "-kb-dir" => {
+                if i + 1 < args.len() {
+                    kb_dir_str = args[i + 1].clone();
+                    i += 2; // 跳过 flag 和 value
+                } else {
+                    i += 1;
+                }
+            }
+            "--help" | "-h" => {
+                print_usage();
+                process::exit(0);
+            }
+            _ => {
+                if !args[i].starts_with('-') {
+                    cmd_idx = i;
+                    break;
+                }
+                i += 1;
+            }
         }
-    }
-
-    if args.iter().any(|a| a == "--help" || a == "-h") {
-        print_usage();
-        process::exit(0);
-    }
-
-    if cmd_idx >= args.len() {
-        print_usage();
-        process::exit(0);
     }
 
     let kb = KbManager::new(&kb_dir_str);
@@ -497,8 +642,8 @@ fn main() {
         "init" => {
             if let Err(e) = kb.init_v2() { eprintln!("init failed: {}", e); process::exit(1); }
             kb.ensure_project().ok();
-            kb.append_log("init", "KB structure initialized (v2: _compiled/ + .project.json)").ok();
-            println!("KB structure ready (v2: _compiled/ + .project.json)");
+            kb.append_log("init", "KB structure initialized (v2.2: BM25 search + get command)").ok();
+            println!("KB structure ready (v2.2: BM25 search + Progressive Disclosure)");
         }
 
         "add" => {
@@ -540,7 +685,6 @@ fn main() {
 
             if let Err(e) = kb.add_entry(&entry) { eprintln!("add failed: {}", e); process::exit(1); }
             kb.append_log("add", &format!("Add entry: {} [{}]", entry_name, entry_type)).ok();
-            // Auto-rebuild: keep _index.md and .index.jsonl always in sync
             if let Err(e) = kb.rebuild_index_v2() { eprintln!("rebuild after add failed: {}", e); }
             println!("Added [{}] {}", entry.entry_type, entry.name);
         }
@@ -563,12 +707,71 @@ fn main() {
 
         "search" => {
             if cmd_idx+1 >= args.len() { eprintln!("search <keyword>"); process::exit(1); }
-            let k = args[cmd_idx+1].to_lowercase();
-            let results: Vec<_> = kb.load_index().into_iter()
-                .filter(|e| e.name.to_lowercase().contains(&k) || e.tags.to_lowercase().contains(&k))
-                .collect();
-            println!("{} results for '{}':", results.len(), args[cmd_idx+1]);
-            for e in results { println!("  [{}] {} | {}", e.entry_type, e.name, e.tags); }
+            let query = &args[cmd_idx+1];
+            let entries = kb.load_index();
+
+            if entries.is_empty() {
+                println!("0 results for '{}':", query);
+                println!("(knowledge base is empty — run 'init' or 'rebuild' first)");
+                process::exit(0);
+            }
+
+            let index = Bm25Index::build(&entries, &kb.kb_dir);
+            let results = index.search(query);
+
+            println!("{} results for '{}' (BM25):", results.len(), query);
+            for (name, etype, tags, score) in results {
+                println!("  [{}] {} | {} | score={:.3}", etype, name, tags, score);
+            }
+        }
+
+        "get" => {
+            if cmd_idx+1 >= args.len() { eprintln!("get <name>"); process::exit(1); }
+            let name_arg = &args[cmd_idx+1];
+            let entry = kb.get_entry(name_arg);
+
+            match entry {
+                Some(e) => {
+                    println!("═══════════════════════════════════════");
+                    println!("名称：{}", e.name);
+                    println!("类型：{}", e.entry_type);
+                    println!("标签：{}", e.tags);
+                    if let Some(ref file) = e.file {
+                        println!("文件：{}", file);
+                    }
+                    if let Some(ref status) = e.status {
+                        println!("状态：{}", status);
+                    }
+                    println!("创建：{}", e.created);
+                    if let Some(ref updated) = e.updated {
+                        println!("更新：{}", updated);
+                    }
+                    if !e.sources.is_empty() {
+                        println!("来源：{}", e.sources.join(", "));
+                    }
+                    if !e.backlinks.is_empty() {
+                        println!("反向链接：{}", e.backlinks.join(", "));
+                    }
+                    println!("═══════════════════════════════════════");
+
+                    // Level 2: Show file content preview (first 300 chars)
+                    let content = kb.read_entry_file(&e);
+                    if !content.is_empty() {
+                        let preview = content.lines().skip_while(|l| l.is_empty() || l.starts_with("---")).take(15).collect::<Vec<_>>().join("\n");
+                        let preview = if preview.len() > 300 { format!("{}...", &preview[..300]) } else { preview };
+                        if !preview.is_empty() {
+                            println!("\n内容预览（Level 2）：");
+                            println!("{}", preview);
+                        }
+                    }
+                    println!("═══════════════════════════════════════");
+                }
+                None => {
+                    eprintln!("Entry not found: '{}'", name_arg);
+                    eprintln!("Hint: run 'search <keyword>' to find entry names");
+                    process::exit(1);
+                }
+            }
         }
 
         "rebuild" => {
@@ -673,7 +876,6 @@ fn main() {
             println!("Note: Full ingest (LLM analysis -> Wiki update) requires external LLM call.");
             println!("kb-rust only updates the index and log.");
             kb.append_log("ingest", &format!("Ingest: {} ({})", name, etype)).ok();
-            // Auto-rebuild: keep _index.md and .index.jsonl always in sync
             if let Err(e) = kb.rebuild_index_v2() { eprintln!("rebuild after ingest failed: {}", e); }
         }
 

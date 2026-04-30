@@ -1,0 +1,1 @@
+/Users/jennyhu/claude-code-source/tasks/audio-comic-skills/kb-rust/v2/target/release/kb-rust-v2: /Users/jennyhu/claude-code-source/tasks/audio-comic-skills/kb-rust/v2/src/default_workflow.md /Users/jennyhu/claude-code-source/tasks/audio-comic-skills/kb-rust/v2/src/main.rs
