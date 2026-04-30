@@ -1,0 +1,121 @@
+# constraints/INDEX.yaml
+# 约束元数据库索引
+
+description: |
+  有声漫画 Skills 体系全量约束索引
+  约束来源：C0-C23 / HC-AP / HC-API / C-DEV / 版本历史规则
+  管理原则：约束在 constraints/ 中心化，SKILL.md 中轻量引用
+
+# 全量约束清单
+constraints:
+  - id: c17
+    name: 遇到不明白→七步查询顺序
+    source: TASK_PROGRESS.md / claude-error-handler
+    applies_to_skills:
+      - claude-first-check
+      - claude-error-handler
+      - claude-scope-judge
+      - chinese-thinking
+
+  - id: c18
+    name: 3分钟无动作则自检继续主线
+    source: TASK_PROGRESS.md / heartbeat-rules.md
+    applies_to_skills:
+      - claude-first-check
+      - heartbeat-service
+
+  - id: c19
+    name: 发现违规记录并修复
+    source: TASK_PROGRESS.md / claude-error-handler
+    applies_to_skills:
+      - claude-error-handler
+      - knowledge-base-manager
+      - task-book-keeper
+      - claude-scope-judge
+
+  - id: c20
+    name: 错误范例关键词非修改依据
+    source: TASK_PROGRESS.md / claude-error-handler
+    applies_to_skills:
+      - claude-error-handler
+
+  - id: c22
+    name: 错误范例仅作查询依据
+    source: TASK_PROGRESS.md
+    applies_to_skills:
+      - claude-error-handler
+      - claude-scope-judge
+
+  - id: c23
+    name: 补技能不补约束
+    source: TASK_PROGRESS.md / claude-error-handler
+    applies_to_skills:
+      - claude-error-handler
+      - skill-creator
+      - chinese-thinking
+
+  - id: hc-ap1
+    name: 本地明文永远保留
+    source: core-asset-protection
+    applies_to_skills:
+      - task-book-keeper
+      - core-asset-protection
+      - encrypted-backup
+
+  - id: hc-ap2
+    name: 备份模型并行
+    source: core-asset-protection
+    applies_to_skills:
+      - encrypted-backup
+      - core-asset-protection
+
+  - id: hc-ap3
+    name: 禁止自动删除
+    source: core-asset-protection
+    applies_to_skills:
+      - claude-file-safety
+      - knowledge-base-manager
+
+  - id: hc-api1
+    name: 禁止远程备份
+    source: API-Key-安全规格
+    applies_to_skills:
+      - core-asset-protection
+      - encrypted-backup
+
+  - id: hc-api2
+    name: 禁止复制传输
+    source: API-Key-安全规格
+    applies_to_skills:
+      - core-asset-protection
+      - claude-memory
+
+  - id: c-dev
+    name: kb-rust项目目录约束
+    source: C-DEV-项目目录约束
+    applies_to_skills:
+      - knowledge-base-manager
+
+  - id: version-history
+    name: 版本历史只追加不覆盖
+    source: 有声漫画-Skills-全景图.md / heartbeat-rules.md
+    applies_to_skills:
+      - ALL_SKILLS  # 所有 Skills 的 SKILL.md
+    applies_to_files:
+      - "*.md"
+      - "SKILL.md"
+      - "TASK_*.md"
+
+# 查询接口
+query_interface:
+  by_skill: |
+    grep "applies_to_skills" INDEX.yaml | grep <skill_name>
+  
+  by_file: |
+    bash constraints/query.sh --file <path> --action <read|edit|write|delete>
+  
+  by_action: |
+    bash constraints/query.sh --skill <skill> --action <edit|write|delete>
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本，约束元数据库建立

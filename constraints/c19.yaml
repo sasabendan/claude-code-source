@@ -1,0 +1,43 @@
+# constraints/c19.yaml
+# C19：发现违规→记录并修复，直接执行不问用户
+
+id: c19
+name: 发现违规记录并修复
+name_en: C19 Violation Record and Fix
+priority: critical
+severity: violation
+
+source:
+  - TASK_PROGRESS.md v0.9
+  - claude-error-handler/SKILL.md
+
+trigger:
+  when: "发现违反约束/违反规则时"
+
+action:
+  - step: 1
+    name: 记录
+    target: "knowledge-base/.index.jsonl"
+    content: "错误内容 + User 评价 + 时间戳"
+  - step: 2
+    name: 修复
+    behavior: "直接执行，不问用户"
+
+key_principle: |
+  发现违规 = 行动信号
+  不是停下来问用户
+  而是直接修复 + 记录
+
+violation_action:
+  - 违反 C19 本身也是一种违规
+  - 记录 FC
+
+fail_cases:
+  - FC001: WRAP.md 未授权自建
+  - FC002: C11 Keychain 越权修复尝试
+  - FC003: backup.sh 密码硬编码
+  - FC004: 执行范围>任务书范围
+  - FC006: 版本历史覆盖尝试
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

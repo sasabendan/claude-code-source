@@ -1,0 +1,1 @@
+{"date":"2026-04-30","scope":"分支任务 #BR-001/#BR-002 + 主线技术债务推进","authorized_by":"用户（总体授权）","status":"active","hooks_configured":["SessionStart","PreToolUse","PostToolUse","SlashCommand"],"branch_tasks":["#BR-001 PreToolUse Hook×约束执行路径","#BR-002 约束元数据库建设"]}

@@ -1,0 +1,26 @@
+# constraints/c22.yaml
+# C22：错误范例仅作查询依据，不得作修改依据
+
+id: c22
+name: 错误范例仅作查询依据
+name_en: C22 Fail Cases Query Only
+priority: high
+severity: warning
+
+source:
+  - TASK_PROGRESS.md v0.9
+
+key_principle: |
+  错误范例 = 查询用（参考）
+  不是 = 修改用（依据）
+
+distinction:
+  - "查询依据"：查到了→知道什么不能做→避免重复犯错
+  - "修改依据"：查到了→试图修改约束来合法化错误
+
+violation_action:
+  - 不得用错误范例中的关键词修改约束
+  - 约束修改的唯一依据：任务主线
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

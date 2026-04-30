@@ -1,0 +1,30 @@
+# constraints/c20.yaml
+# C20：错误范例关键词 ≠ 修改约束的依据
+
+id: c20
+name: 错误范例关键词非修改依据
+name_en: C20 Fail Case Keywords Not Modification Basis
+priority: critical
+severity: violation
+
+source:
+  - TASK_PROGRESS.md v0.9
+  - claude-error-handler/SKILL.md
+
+key_principle: |
+  错误范例中的内容（C11/Keychain/密码等）
+  不得作为修改约束条件的理由
+
+rationale: |
+  错误范例 = 记录"什么不能做"
+  不是"可以通过修改约束来合法化错误行为"
+
+violation_action:
+  - 不得引用错误范例作为修改约束的依据
+  - 修改约束的唯一依据：任务主线
+
+fail_cases:
+  - FC002: "用错误修改公共记忆，Keychain 在 Skill 不在任务书"
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

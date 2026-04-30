@@ -1,0 +1,31 @@
+# constraints/c18.yaml
+# C18：3分钟无动作则自检，继续主线
+
+id: c18
+name: 3分钟无动作则自检继续主线
+name_en: C18 Idle Self-Check
+priority: medium
+severity: info
+
+source:
+  - TASK_PROGRESS.md v0.9
+  - heartbeat-rules.md
+
+trigger:
+  when: "3分钟无任务执行时"
+  mechanism: |
+    gap = now - last_heartbeat.mtime (分钟)
+    gap > 3 → 自检：现在该干什么
+    gap ≤ 3 → 继续主线
+
+action:
+  - 读取 TASK_PROGRESS.md 当前进度
+  - 继续主线当前节点
+  - 更新 heartbeat-state.md
+
+violation_action:
+  - 不空想，不猜测
+  - 不创建未经授权的新文件
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

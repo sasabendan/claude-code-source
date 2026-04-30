@@ -1,0 +1,54 @@
+# constraints/c17.yaml
+# C17：遇到不明白 → 七步查询顺序
+
+id: c17
+name: 遇到不明白→七步查询顺序
+name_en: C17 Query Sequence
+priority: high
+severity: warning
+
+# 约束来源
+source:
+  - TASK_PROGRESS.md v0.9
+  - claude-error-handler/SKILL.md
+
+# 触发条件
+trigger:
+  when: "遇到不明白/不确定/不知道时"
+  examples:
+    - "不知道某个机制是否存在"
+    - "不确定某个约束是否适用"
+    - "不清楚某个文件的位置"
+
+# 七步查询顺序（强制）
+query_sequence:
+  - step: 1
+    name: 任务书
+    location: "TASK_REQUIREMENTS.md / TASK_PROGRESS.md"
+  - step: 2
+    name: 知识库
+    location: "knowledge-base/.index.jsonl / knowledge-base/"
+  - step: 3
+    name: 上下文
+    location: "本次会话历史 / memory-store.jsonl"
+  - step: 4
+    name: 技能
+    location: "各 Skill SKILL.md"
+  - step: 5
+    name: 本地备份
+    location: "backups/ / git 历史"
+  - step: 6
+    name: 网络搜索
+    location: "mcp__exa__web_search_exa / mcp__exa__crawling_exa"
+  - step: 7
+    name: 带经验问用户
+    location: "用户输入"
+
+# 违规处理
+violation_action:
+  - 记录为 FC（Fail Case）
+  - 补录到 claude-error-handler SKILL.md
+
+# 版本历史
+version_history:
+  - v1.0 (2026-04-30): 初始版本

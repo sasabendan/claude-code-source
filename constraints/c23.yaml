@@ -1,0 +1,31 @@
+# constraints/c23.yaml
+# C23：补技能不补约束
+
+id: c23
+name: 补技能不补约束
+name_en: C23 Add Skill Not Constraint
+priority: critical
+severity: violation
+
+source:
+  - TASK_PROGRESS.md v0.9
+  - claude-error-handler/SKILL.md
+
+key_principle: |
+  在不违反现有约束的前提下补缺失知识
+  不得修改约束本身
+
+rationale: |
+  约束 = 边界，边界改变需要用户授权
+  技能 = 能力，能力可以自主增加
+
+exceptions:
+  - 用户明确授权修改约束
+  - 约束本身有错误（而非执行不当）
+
+violation_action:
+  - 不得在 Skill 中修改 C 系列约束
+  - 如发现约束有问题，记录并请用户授权
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

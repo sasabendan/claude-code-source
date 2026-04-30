@@ -92,3 +92,25 @@ knowledge-base/experience/   # 经验知识（含参考文献映射）
 - 当前授权范围：见 `~/.claude/authorized-scope.jsonl`
 - 每日打卡：主任务未完成前，每天向用户确认授权
 - 核心原则：主任务 = 边界，边界之外必须取得明确授权
+
+## 会话启动自动检查
+
+每次新会话（/clear 后）启动时，自动运行检查脚本：
+
+```bash
+# 在 startup 阶段自动执行
+bash /Users/jennyhu/claude-code-source/scripts/session-check.sh
+```
+
+检查内容：
+1. 主线项目文件（TASK_PROGRESS.md / heartbeat-state.md / TASK_REQUIREMENTS.md / CLAUDE.md / master-plan.md）
+2. 知识库完整性（.index.jsonl 条目数）
+3. 核心 Skills S0-S5 可用性
+4. 全量 23 个 Skills 可用性
+5. 关键脚本（backup.sh / kb-manager.sh / heartbeat-service.sh）
+6. 本地备份状态
+7. 技术债务状态（C0 cron / C1 Rust / C5 OpenSpec）
+
+检查结果追加写入：`tasks/audio-comic-skills/session-check.log`（时间戳格式，每次新行）
+
+> 触发时机：`~/.claude/settings.json` 的 SessionStart Hook 已配置 claude-first-check，heartbeat-service.sh 会自动调用 session-check.sh。

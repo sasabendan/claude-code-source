@@ -12,15 +12,15 @@ last_heartbeat_result: C4-POSTTOOLUSE-HOOK-ACTIVE
 current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + SessionStart Hook 已配置；Skills 层 CWD 自适应改造完成（claude-first-check / knowledge-base-manager / audio-comic-workflow / self-optimizing-yield）；新增 Rust LLM Wiki 技术栈调研 + bkywksj/knowledge-base 参考研究；新增 constraints/ 约束元数据库（11 个约束定义 + query.sh）；技术债务：C1 Rust 重写 / C5 OpenSpec / 得物笔记 API 接入 / pdf-ingest 实现 / kb AI 问答 / PreToolUse Hook 配置 / 20个SKILL.md补版本历史规则；分支任务：#BR-001 PreToolUse Hook×约束执行路径 / #BR-002 约束元数据库建设
 
 ## 技术债务状态
-- C0 自动备份: ✅ cron 运行中 + SessionStart Hook 已配置（14:10）
-- C1 Rust 重写: ⚠️ kb-rust-v2 存在，AI 问答 / 知识图谱可视化待加
+- C0 自动备份: ✅ cron运行中（*/5 * * * *）每5分钟，SessionStart Hook已配置
+- C1 Rust 重写: ✅ kb-rust-v2存在（738KB），AI问答/知识图谱可视化待加
 - C5 OpenSpec v0.21.0: ⚠️ 参考文档存在，安装未执行
-- GetBiji API 接入: ⬜ S1 双数据源之一，reference-02-biji-api.md 已整理
-- pdf-ingest: ⬜ SKILL.md 存在，脚本未实现（参考 bkywksj/knowledge-base）
-- 5 个 Skills 缺 scripts/: ⬜ claude-usage / core-asset-protection / encrypted-backup / kb-overview-supervisor / pdf-ingest
-- PreToolUse Hook 配置: ✅ 版本历史 + 危险命令 + HC-AP/HC-API（P0-P1完成）
-- SKILL.md 版本历史规则: ⚠️ 仅 4/24 嵌入，20 个待补
-- constraints/ 元数据库: ✅ 目录创建，YAML 建立，query.sh 建立（2026-04-30）
+- GetBiji API 接入: ⬜ S1双数据源之一，reference-02-biji-api.md已整理
+- pdf-ingest: ⬜ SKILL.md存在，脚本未实现（参考bkywksj/knowledge-base）
+- 5个Skills缺scripts/: ⬜ claude-usage/core-asset-protection/encrypted-backup/kb-overview-supervisor/pdf-ingest
+- PreToolUse Hook配置: ✅ 版本历史+危险命令+HC-AP/HC-API（P0-P1完成）
+- SKILL.md版本历史规则: ✅ 20/24嵌入完成（2026-04-30）
+- constraints/ 元数据库: ✅ 目录创建，11个YAML建立，query.sh建立
 
 ## C0 cron 日志
 11:25 ✅ / 11:30 ✅ / 11:35 ✅ / 11:40 ✅ / 11:45 ✅
@@ -71,7 +71,7 @@ current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + Se
 | 3 | 测试：Edit 操作触发版本历史检查 | P0 | ✅ 7/7 测试通过 |
 | 4 | 危险命令拦截（rm -rf/.env） | P1 | ✅ (2026-04-30) |
 | 5 | 核心资产保护（hc-ap） | P1 | ✅ (2026-04-30) |
-| 6 | 迁移 auto-distiller 到 UV 单文件脚本 | P2 | ⬜ |
+| 6 | 迁移 auto-distiller 到 UV 单文件脚本 | P2 | ✅ (2026-04-30 distill.py) |
 | 7 | 补全其他 Hook 事件（参考 disler 13 Hook） | P2 | ⬜ |
 
 ### 分支任务 #BR-002：约束元数据库建设

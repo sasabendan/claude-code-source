@@ -1,0 +1,47 @@
+# constraints/c-dev.yaml
+# C-DEV：kb-rust 项目目录约束
+
+id: c-dev
+name: kb-rust项目目录约束
+name_en: C-DEV Project Directory Constraint
+priority: high
+severity: warning
+
+# 约束来源
+source:
+  - C-DEV-项目目录约束.md
+
+# 与 C0-C23 的关系
+relation:
+  level: 项目级（独立于 C0-C23）
+  scope: kb-rust 项目内部目录管理
+  conflict: 无冲突
+
+# 约束内容
+directory_rules:
+  production:
+    path: "knowledge-base/"
+    description: 生产知识库，唯一数据源
+    management: KB 管理
+
+  test_sandbox:
+    - path: "kb-rust/knowledge-base-test/"
+      description: v1 开发烟测沙箱
+      rule: "禁止并入 production KB"
+    - path: "kb-rust/v2/kb-v2-test/"
+      description: v2 开发烟测沙箱
+      rule: "禁止并入 production KB"
+
+prohibited_actions:
+  - 将测试 KB 条目合并入 knowledge-base/
+  - 删除测试目录作为"清理孤立页"手段
+  - 将测试数据放入 knowledge-base/ 目录
+  - 用测试 KB 数据填充或修复生产 KB
+
+archive_rules:
+  location: "~/.backup/audio-comic-skills/kb-rust/"
+  current: "kb-rust/v2/"
+
+# 版本历史
+version_history:
+  - v1.0 (2026-04-30): 初始版本
