@@ -127,3 +127,73 @@ char_interval_accuracy < 98% → QA FAIL → 重新提取
 bash skills/knowledge-base-manager/scripts/grounding-verify.sh <extractions.jsonl> <original_text>
 ```
 
+---
+
+## 扩展：Rigor Gaps 检测层（2026-04-28）
+
+参考 EveryInc/compound-engineering-plugin 的 Prose-based probing for logical consistency，作为 NCA 门禁的前置校验层。
+
+### 核心理念
+
+> "Prose-based probing for logical consistency" — 用散文式探测检测方案逻辑自洽性。
+
+### 4维检测框架
+
+| 维度 | 检查内容 | 触发时机 |
+|------|---------|---------|
+| 前提验证 | 假设是否成立？ | P1 剧本生成前 |
+| 依赖验证 | 外部依赖是否可靠？ | P3 生图前（P2 完成后）|
+| 边界验证 | 极端情况是否考虑？ | P2 分镜设计前 |
+| 逻辑链验证 | 因果关系是否自洽？ | P4 配音参数传递前 |
+
+### 各节点检测脚本
+
+```yaml
+rigor_check_P1:
+  triggers: ["P1 剧本生成启动前"]
+  checks:
+    - premise: "原文叙事逻辑是否自洽？"
+    - dependency: "目标字数/风格是否可达成？"
+    - boundary: "是否存在极端长度章节（>100K字符）？"
+    - logic_chain: "角色动机的因果链是否完整？"
+
+rigor_check_P2:
+  triggers: ["P2 分镜设计启动前"]
+  checks:
+    - premise: "剧本场景划分是否合理？"
+    - dependency: "分镜工具/API 是否可用？"
+    - boundary: "场景数量是否超出合理范围？"
+    - logic_chain: "镜头之间的逻辑衔接是否连贯？"
+
+rigor_check_P3:
+  triggers: ["P3 生图渲染启动前"]
+  checks:
+    - premise: "角色视觉描述是否完整？"
+    - dependency: "生图 API（MiniMax/Flux）是否可用？"
+    - boundary: "分辨率是否在支持范围内？"
+    - logic_chain: "LoRA 权重是否与风格一致？"
+
+rigor_check_P4:
+  triggers: ["P4 配音合成启动前"]
+  checks:
+    - premise: "情感参数是否自洽？"
+    - dependency: "TTS API 是否可用？"
+    - boundary: "音频时长是否合理？"
+    - logic_chain: "情感传递链路是否完整？"
+```
+
+### 失败处理
+
+任一维度失败 → 生成 Rigor Gap Report → 阻塞流水线直到修复：
+
+```yaml
+gap_report:
+  node: "P3"
+  failed_dimensions: ["premise", "logic_chain"]
+  details:
+    - "character visual_features 不完整（缺少 '发型颜色' 字段）"
+    - "LoRA 权重 1.2 超出 [0.7, 0.9] 合理范围"
+  recommendation: "返回 P1 补充 character 视觉描述"
+  blocking: true
+```
+

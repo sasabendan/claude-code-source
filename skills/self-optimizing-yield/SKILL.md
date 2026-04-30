@@ -179,16 +179,16 @@ experience-vault/
 triggers:
   - PostToolUse: Bash(script-generation)
     action: distill_script_params → knowledge-base
-    
+
   - PostToolUse: Bash(image-generation)
     action: distill_style_params → kb-rust
-    
+
   - PostToolUse: Bash(audio-generation)
     action: distill_voice_params → Character_Voice_Preset
-    
+
   - PostToolUse: Supervisor verify PASS
     action: distill_success_pattern → experience-vault
-    
+
   - Stop: SessionEnd
     action: distill_session_summary → progress.txt
 ```
@@ -214,13 +214,71 @@ distillation_quality:
   token_savings:
     description: "Progressive Disclosure Token 节省率"
     target: "≥ 80%"
-    
+
   char_interval_accuracy:
     description: "原文溯源准确率"
     target: "≥ 95%"
-    
+
   observation_count:
     description: "每批次蒸馏的 observation 数量"
     tracking: "per_run"
+```
+
+---
+
+## 扩展：ce-compound 复利飞轮（2026-04-28）
+
+参考 EveryInc/compound-engineering-plugin 的 `/ce-compound` 机制，作为良品率优化的核心复利循环。
+
+### ce-compound 飞轮流程
+
+```
+批次完成 → 问题捕获 → 5维重叠检测 → 经验文档沉淀
+                                    ↓
+                              下一批次调用
+                                    ↓
+                              再优化 → 再沉淀（飞轮闭环）
+```
+
+### 经验文档结构（docs/solutions/ 格式）
+
+```yaml
+---
+title: "[P3] 风格一致性下降 - 批次 #42"
+category: optimization        # bug-fix | optimization | feature | refactor | research
+difficulty: medium           # trivial | easy | medium | hard | epic
+outcome: P3 风格一致性从 0.72 提升至 0.91
+references: []
+related_issues: []
+prevention_rules:
+  - 每次生图前检查 LoRA 权重是否在 [0.7, 0.9] 范围内
+  - 批次开始前校验 character visual_features 完整性
+---
+```
+
+### 5维重叠检测
+
+评估新经验与现有经验的重叠程度：
+
+| 维度 | 评估内容 | ≥3维时操作 |
+|------|---------|-----------|
+| problem_statement | 问题类型相同？ | 合并到现有文档 |
+| root_cause | 根本原因相同？ | 覆盖现有文档 |
+| solution_approach | 解决方案相同？ | 交叉引用 |
+| referenced_files | 涉及文件相同？ | 更新现有文档 |
+| prevention_rules | 预防规则相同？ | 合并规则 |
+
+### 与 S4/Rigor Gaps 对齐
+
+批次经验文档中增加 Rigor Gaps 校验结论：
+
+```yaml
+---
+rigor_gaps_assessment:
+  premise_check: "LoRA 权重范围假设验证 ✓"
+  dependency_check: "MiniMax API 可用性确认 ✓"
+  boundary_check: "极端长文本场景未覆盖 → 加入 long-doc test"
+  logic_chain_check: "情感参数传递链路自洽 ✓"
+---
 ```
 
