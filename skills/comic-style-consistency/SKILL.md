@@ -99,3 +99,42 @@ consistency_score = compare(
 ## 代码入口
 
 `skills/comic-style-consistency/scripts/style-manager.sh`
+
+---
+
+## 扩展：Character Visual Features from LangExtract（2026-04-30）
+
+### 新增输入源
+
+LangExtract 的 character 提取结果可直接作为角色锚定输入：
+
+```json
+{
+  "extraction_class": "character",
+  "extraction_text": "萧炎",
+  "char_interval": [1523, 1645],
+  "attributes": {
+    "role": "protagonist",
+    "age_estimate": "15-16",
+    "emotional_baseline": "不甘/隐忍/坚韧",
+    "visual_features": {
+      "appearance": "少年，黑发，消瘦但目光坚定",
+      "clothing": "萧家传统服饰"
+    }
+  }
+}
+```
+
+### 使用方法
+
+1. P1 完成后，从 extractions.jsonl 读取 character 列表
+2. 为每个 character 生成 reference image
+3. 将 visual_features 写入知识库 character 目录
+4. P3 生图时使用 visual_features 作为 prompt 锚点
+
+### 质量要求
+
+- 每个 character 至少有一个 visual_features.appearance 描述
+- char_interval 必须存在（用于溯源）
+- emotional_baseline 用于生图时的表情控制
+

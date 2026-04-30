@@ -1,0 +1,4 @@
+{"extraction_class": "character", "extraction_text": "萧炎", "char_interval": [1523, 1645], "attributes": {"role": "protagonist", "emotional_baseline": "不甘/隐忍"}, "timestamp": "2026-04-30T15:16:54.413581+00:00"}
+{"extraction_class": "dialogue", "extraction_text": "父亲，今天的测试...", "char_interval": [500, 580], "attributes": {"speaker": "萧炎", "emotion": "压抑的愤怒"}, "timestamp": "2026-04-30T15:16:54.413859+00:00"}
+{"extraction_class": "scene", "extraction_text": "萧家大厅", "char_interval": [100, 300], "attributes": {"location": "萧家测试大厅", "visual_prompt_sd": "Chinese ancient hall, stone tablet"}, "timestamp": "2026-04-30T15:16:54.413866+00:00"}
+{"extraction_class": "sfx", "extraction_text": "轰", "char_interval": [1200, 1220], "attributes": {"type": "impact", "intensity": "high"}, "timestamp": "2026-04-30T15:16:54.413871+00:00"}

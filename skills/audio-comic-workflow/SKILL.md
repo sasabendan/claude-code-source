@@ -9,6 +9,28 @@ Do NOT use when: 用户只是想查询某个具体环节的信息，而非启动
 ## 功能定位
 有声漫画全流程编排引擎，主触发入口。
 
+## 项目上下文（CWD 自适应）
+
+本 Skill 不依赖 CLAUDE.md 读取上下文，直接内嵌配置：
+
+```
+知识库路径：CWD 自适应
+  ① $AUDIO_COMIC_KB（环境变量，最高优先）
+  ② ./knowledge-base/
+  ③ ./tasks/*/knowledge-base/
+  ④ ../tasks/*/knowledge-base/
+
+风格参数：CWD 自适应
+  ① ./knowledge-base/styles/
+  ② ./tasks/*/knowledge-base/styles/
+
+任务书：
+  ① ./TASK_REQUIREMENTS.md
+  ② ./tasks/*/TASK_REQUIREMENTS.md
+
+触发词：开始创作有声漫画
+```
+
 ## 核心能力
 
 | 能力 | 说明 | 类型 |
@@ -100,3 +122,81 @@ checkpoint:
 ## 代码入口
 
 `skills/audio-comic-workflow/scripts/workflow-engine.sh`
+
+---
+
+## 扩展：Stage 0 剧本预提取（2026-04-30）
+
+### 新增阶段
+
+在原有 7 环节流水线之前，增加 Stage 0：剧本结构化预提取。
+
+```
+Stage 0: LangExtract 预提取（新增）
+  ↓
+P1: 脚本生成
+  ↓
+P2: 分镜设计
+  ↓
+P3: 生图渲染
+  ↓
+P4: 配音合成
+  ↓
+P5: 成品合成
+  ↓
+P6: 排版发布
+```
+
+### Stage 0 流程
+
+```
+1. 接收原著文本（路径或 URL）
+2. 调用 langextract-pre.sh
+3. 提取：character / dialogue / scene / sfx
+4. 输出：extractions.jsonl + visualization.html
+5. 质量检查：char_interval 覆盖率 ≥ 95%
+6. 写入 evidence/run-<N>/extractions/
+```
+
+### 输入
+
+```yaml
+stage: 0
+action: pre-extract
+source: <原著文本路径 或 URL>
+model: gemini-2.5-flash  # 推荐，默认
+extraction_passes: 3     # 长文档用 3 次
+```
+
+### 输出
+
+```yaml
+status: success
+extractions_file: <evidence_dir>/extractions.jsonl
+visualization: <evidence_dir>/extraction_visualization.html
+grounding_rate: 0.97     # char_interval 覆盖率
+character_count: 12
+dialogue_count: 45
+scene_count: 8
+sfx_count: 5
+```
+
+### NCA 必要条件
+
+| 指标 | 阈值 |
+|------|------|
+| grounding_rate | ≥ 95% |
+| character 有 name | 100% |
+| dialogue 有 emotion | 100% |
+| scene 有 visual_prompt_sd | 100% |
+| sfx 有 timing | 100% |
+
+### 失败处理
+
+Stage 0 NCA 不满足 → 不进入 P1 → 修复提取结果后重试
+
+### 相关 Skill
+
+- [[knowledge-base-manager]]：提供 langextract-pre.sh
+- [[supervision-anti-drift]]：Stage 0 验收
+

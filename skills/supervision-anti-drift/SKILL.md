@@ -88,3 +88,42 @@ cost_actual: <实际花费>
 ## 代码入口
 
 `skills/supervision-anti-drift/scripts/supervisor.sh`
+
+---
+
+## 扩展：Source Grounding Verification（2026-04-30）
+
+### 新增验收维度
+
+在原有 NCA 必要条件基础上，增加 Source Grounding 验证层。
+
+### 验收流程
+
+```
+节点完成后：
+1. 检查 extractions.jsonl 存在
+2. 验证 char_interval 覆盖率 ≥ 95%
+3. 随机抽查 5 个 extraction，核对原文
+4. 输出 grounding verification report
+```
+
+### 验收标准
+
+| 指标 | 阈值 |
+|------|------|
+| grounding_rate | ≥ 95% |
+| ungrounded_ratio | ≤ 5% |
+| char_interval_accuracy | ≥ 98%（抽样验证） |
+
+### 失败处理
+
+grounding_rate < 95% → QA FAIL → 创建 fix 任务
+char_interval_accuracy < 98% → QA FAIL → 重新提取
+
+### 相关 Script
+
+```bash
+# grounding-verify.sh
+bash skills/knowledge-base-manager/scripts/grounding-verify.sh <extractions.jsonl> <original_text>
+```
+

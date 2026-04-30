@@ -9,6 +9,19 @@ Do NOT use when: 生产批次尚未结束，或良品率数据不足（C5 未满
 ## 功能定位
 持续积累经验、自动调参、提高下一次良品率。
 
+## 关联约束（C17-C23）
+
+> 本 Skill 须遵守以下约束体系（优先级：约束 > 个人经验）：
+
+| 约束 | 内容 | 执行要点 |
+|------|------|---------|
+| C17 | 查询顺序 | 遇到不明白 → 任务书 → 知识库 → 上下文 → 技能 → 本地备份 → 网络 → 问用户 |
+| C18 | 3 分钟无动作自检 | 继续主线当前节点，不空想 |
+| C19 | 发现违规直接修复 | 记录并修复，不问用户 |
+| C20 | 错误范例关键词 ≠ 修改依据 | 不得以 Fail Case 中的内容为由修改约束 |
+| C22 | 错误范例仅作查询依据 | 不得作修改依据，修改唯一依据：任务主线 |
+| C23 | 补技能不补约束 | 在不违反现有约束的前提下补知识，不得修改约束本身 |
+
 ## 核心能力
 
 | 能力 | 说明 | 类型 |
@@ -98,3 +111,58 @@ rollback_conditions:
 ## 代码入口
 
 `skills/self-optimizing-yield/scripts/yield-optimizer.sh`
+
+---
+
+## 扩展：Extraction Quality Tracking（2026-04-30）
+
+### 新增追踪指标
+
+在良品率追踪体系中，增加 LangExtract 提取质量指标。
+
+### 新增指标
+
+```yaml
+extraction_quality:
+  grounding_rate:
+    description: "char_interval 覆盖率"
+    tracking: "per_chapter"
+    target: "≥ 95%"
+    
+  ungrounded_rate:
+    description: "无效提取比例"
+    tracking: "per_chapter"
+    target: "≤ 5%"
+    
+  class_distribution:
+    description: "提取类型分布（character/dialogue/scene/sfx）"
+    tracking: "per_project"
+    
+  repeat_extraction_rate:
+    description: "重复提取比例（同一 character 多次出现时）"
+    tracking: "per_chapter"
+    target: "≤ 10%"
+```
+
+### 优化回路
+
+```
+每批次完成后：
+1. 统计 extraction_quality 指标
+2. 与历史平均对比
+3. 如果指标下降 → 分析原因
+   - grounding_rate 下降 → 检查 prompt 描述
+   - repeat_extraction_rate 上升 → 检查 character dedup 逻辑
+4. 更新 prompt_templates 中的 extraction 模板
+```
+
+### 经验库新增
+
+```markdown
+experience-vault/
+├── extraction-patterns/           # 新增目录
+│   ├── [[extraction-grounding-fail]]       # grounding 失败案例
+│   ├── [[extraction-character-dedup]]       # character 去重逻辑
+│   └── [[extraction-long-doc-optimization]] # 长文档优化
+```
+
