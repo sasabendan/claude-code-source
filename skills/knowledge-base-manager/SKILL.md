@@ -230,3 +230,85 @@ bash skills/knowledge-base-manager/scripts/grounding-verify.sh "<提取结果.js
 
 pi-pods 支持 vLLM GPU pod 管理，可用于 Mac Mini M4 本地模型部署。
 
+
+---
+
+## 扩展：claude-mem 分层记忆 + qmd 混合搜索（2026-04-30）
+
+### claude-mem 三层索引设计
+
+参考 claude-mem 的 Progressive Disclosure 设计，升级 kb-rust 三层索引：
+
+```rust
+// Level 1: Meta-Index（内存）
+// - 关键词/标签索引
+// - 快速定位候选文档
+
+// Level 2: Summary（SQLite）
+// - 语义摘要（distilled）
+// - char_interval 用于溯源
+
+// Level 3: Raw Context（按需加载）
+// - 原始代码片段
+// - 仅 AI 明确要求时加载
+```
+
+**价值**：降低 Mac Mini 16GB 内存压力，~10x Token 节省
+
+### qmd Context Tree 集成
+
+参考 qmd 的树状上下文，设计世界线收束模型：
+
+```bash
+# 声漫专用 Context Tree
+qmd context add qmd://characters "角色设定：萧炎/萧薰儿/萧战"
+qmd context add qmd://scenes "场景设定：萧家大厅/云岚宗/魔兽山脉"
+qmd context add qmd://plotlines "主线：斗气大陆/天赋觉醒/退婚流"
+
+# 检索时自动注入层级背景
+# 当 AI 读取分镜脚本时，自动获得"萧炎在萧家大厅"的上下文
+```
+
+### 自动蒸馏触发（PostToolUse）
+
+参考 claude-mem 的 PostToolUse 钩子：
+
+```bash
+# 当 AI 完成工具调用后自动触发蒸馏
+# 场景：
+# - P3 生图完成 → 蒸馏风格参数 → kb-rust
+# - P4 配音完成 → 蒸馏音频参数 → Character_Voice_Preset
+# - S4 验收通过 → 蒸馏成功经验 → knowledge-base
+
+# 实现：
+# 在 settings.json 中配置 PostToolUse 钩子
+# 钩子调用 kb-rust ingest <observation>
+```
+
+### 实体类型扩展
+
+参考 claude-mem 的 type 过滤，为声漫扩展专用类型：
+
+```json
+{
+  "entity_types": [
+    "Character_Voice_Preset",
+    "Timeline_Marker",
+    "Style_Anchor",
+    "Scene_Description",
+    "Plotline_Node"
+  ]
+}
+```
+
+### 与 kb-rust 的接口
+
+```rust
+// kb-rust 作为 MCP Server 运行
+// 提供工具：
+// - kb_search: 三层检索
+// - kb_timeline: 时间上下文
+// - kb_get: 获取完整详情
+// - kb_ingest: 注入新观察（自动蒸馏）
+```
+

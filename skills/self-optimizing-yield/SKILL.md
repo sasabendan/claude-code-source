@@ -166,3 +166,61 @@ experience-vault/
 │   └── [[extraction-long-doc-optimization]] # 长文档优化
 ```
 
+
+---
+
+## 扩展：基于 claude-mem 的自动蒸馏（2026-04-30）
+
+### 自动蒸馏触发时机
+
+参考 claude-mem 的 PostToolUse 钩子，在以下时机自动蒸馏：
+
+```yaml
+triggers:
+  - PostToolUse: Bash(script-generation)
+    action: distill_script_params → knowledge-base
+    
+  - PostToolUse: Bash(image-generation)
+    action: distill_style_params → kb-rust
+    
+  - PostToolUse: Bash(audio-generation)
+    action: distill_voice_params → Character_Voice_Preset
+    
+  - PostToolUse: Supervisor verify PASS
+    action: distill_success_pattern → experience-vault
+    
+  - Stop: SessionEnd
+    action: distill_session_summary → progress.txt
+```
+
+### 三层索引蒸馏流程
+
+```
+工具执行完成（PostToolUse）
+         ↓
+Level 1: 提取关键词/标签 → Meta-Index（内存）
+         ↓
+Level 2: 生成语义摘要 → Summary（SQLite + char_interval）
+         ↓
+Level 3: 原始参数存档 → Raw Context（按需加载）
+         ↓
+更新 kb-rust 三层索引
+```
+
+### 蒸馏质量追踪
+
+```yaml
+distillation_quality:
+  token_savings:
+    description: "Progressive Disclosure Token 节省率"
+    target: "≥ 80%"
+    
+  char_interval_accuracy:
+    description: "原文溯源准确率"
+    target: "≥ 95%"
+    
+  observation_count:
+    description: "每批次蒸馏的 observation 数量"
+    tracking: "per_run"
+```
+
