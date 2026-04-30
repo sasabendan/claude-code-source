@@ -1,0 +1,53 @@
+# constraints/hc-api.yaml
+# HC-API：API Key 安全约束
+
+id: hc-api
+name: API Key安全约束
+name_en: HC-API API Key Security
+priority: critical
+severity: violation
+
+# 约束来源
+source:
+  - API-Key-安全规格.md
+  - core-asset-protection/SKILL.md
+
+# HC-API 体系
+hc_api:
+  - id: hc-api1
+    name: 禁止远程备份
+    description: API Key 不推 GitHub，不写入 .enc
+    applies_to:
+      - "*.enc"
+      - GitHub 推送内容
+    note: "密钥仅存 macOS Keychain"
+
+  - id: hc-api2
+    name: 禁止复制传输
+    description: API Key 不写入日志/正文/其他文件
+    applies_to:
+      - 日志文件
+      - Claude 回复正文
+      - 任何可外传的文件
+
+  - id: hc-api3
+    name: 禁止删除
+    description: 已存储的 Key 不得自动删除
+    applies_to:
+      - macOS Keychain
+      - memory-store.jsonl 中的 Key 引用
+
+  - id: hc-api4
+    name: 修改必须授权
+    description: 所有 Key 操作须用户明确授权
+    applies_to:
+      - Keychain 添加/修改/删除
+      - .env 文件修改
+
+# 违规处理
+violation_action:
+  - API Key 外泄是严重安全事件
+  - 立即报告用户
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本

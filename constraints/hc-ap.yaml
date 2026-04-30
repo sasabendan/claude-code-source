@@ -1,0 +1,49 @@
+# constraints/hc-ap.yaml
+# HC-AP：核心资产保护约束
+
+id: hc-ap
+name: 核心资产保护
+name_en: HC-AP Core Asset Protection
+priority: critical
+severity: violation
+
+# 约束来源
+source:
+  - core-asset-protection/SKILL.md
+
+# HC-AP 体系
+hc_ap:
+  - id: hc-ap1
+    name: 本地明文永远保留
+    description: 任务书/知识库本地 .md 明文不得删除
+    applies_to:
+      - "TASK_*.md"
+      - "knowledge-base/**/*.md"
+      - "heartbeat-state.md"
+    violation: "不得删除本地明文，即使已推 GitHub"
+
+  - id: hc-ap2
+    name: 备份模型并行
+    description: 核心资产需双轨备份（本地明文 + GitHub 加密）
+    applies_to:
+      - 任务书
+      - 知识库
+    note: "本地明文 + GitHub 加密并行，非替代"
+
+  - id: hc-ap3
+    name: 禁止自动删除
+    description: 知识库管理的文件不得自动请求删除
+    applies_to:
+      - knowledge-base/**
+    exception: "用户主动要求时除外"
+
+# 违规处理
+violation_action:
+  - 记录为 FC（FC004 核心教训）
+  - 核心资产删除前必须 C17 查询
+
+fail_cases:
+  - FC004: 加密推送后删除本地 .md（违反 HC-AP1）
+
+version_history:
+  - v1.0 (2026-04-30): 初始版本
