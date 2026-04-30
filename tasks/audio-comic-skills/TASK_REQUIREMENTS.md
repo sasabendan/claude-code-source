@@ -1,5 +1,5 @@
 # 任务需求表：有声漫画自动化生产 Skills 体系
-## v0.6 | 2026-04-24
+## v0.7 | 2026-04-30
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### 生产流程思维
 ```
-【来料】原著小说文本
+【Stage 0】LangExtract 预提取 → 角色/对白/场景/SFX 结构化提取
     ↓
 【Step 1】顺着原著的故事线、世界线、作品调性 → 打磨剧本
     ↓
@@ -23,6 +23,8 @@
 【持续】良品率追踪 → 不断提升 → 质量可靠的作品
 ```
 
+> **阶段说明**：Stage 0 是所有后续 Worker 的结构化输入，为 Supervisor-Worker 架构提供 Startup Ritual 的可读档案基础。
+
 ### 关键词
 | 关键词 | 含义 |
 |--------|------|
@@ -32,6 +34,9 @@
 | **良品率** | 从合格开始，不断提升 |
 | **核心资产** | 流水线协作方式 + 核心技能优化 + **任务书**，禁止外传 |
 | **任务书迭代** | 每周审视，持续优化 |
+| **证据链优先** | 没有证据 = 没有完成，Agent 自我声称不等于真实产出 |
+| **职责正交化** | 写的不验，验的不写，Supervisor 和 Worker 角色严格分离 |
+| **Startup Ritual** | 每个 Worker 启动前必须读取历史档案并写入 logs/startup.txt |
 
 ---
 
@@ -74,16 +79,17 @@
 ### Skill 3: audio-comic-workflow
 | 项目 | 内容 |
 |------|------|
-| **功能定位** | 流水线编排引擎（主触发入口） |
+| **功能定位** | 流水线编排引擎（主编 Agent，主触发入口） |
 | **核心能力** | 7 环节流水线：脚本→分镜→生图→配音→合成→排版→发布；断点续跑 |
+| **Supervisor-Worker 架构** | 主编 Agent = Supervisor；各环节执行 Agent = Worker；每个环节独立验收 |
 | **触发场景** | **"开始创作有声漫画"** |
 | **参考来源** | ① JimLiu/baoyu-skills ② rosetears.cn/archives/85/ |
 
 ### Skill 4: supervision-anti-drift
 | 项目 | 内容 |
 |------|------|
-| **功能定位** | 所有环节的监督验收 |
-| **核心能力** | checkpoint 验收；漂移检测；审计日志；NCA 必要条件阻断 |
+| **功能定位** | 所有环节的监督验收（主编 Agent 执行层） |
+| **核心能力** | Supervisor 角色；Startup Ritual；双层账本；Immutable Run Folder；HARD GATE；NCA 必要条件阻断 |
 | **强制约束** | `openspec==0.21.0` 禁止升级 |
 | **参考来源** | ① rosetears.cn/archives/85/ ② rosetears.cn/archives/55/ ③ OpenSpec #630 |
 
@@ -121,11 +127,15 @@
 | **C16** | **优先现有条件** | **能用现有条件就用现有条件，除非能效差别巨大或资源占用相差巨大** |
 | **C17** | **遇到不明白/不理解/不合理 → 查询顺序** | ① 任务书（TASK_REQUIREMENTS.md / TASK_PROGRESS.md）→ ② 知识库（knowledge-base/.index.jsonl）→ ③ 上下文（WRAP.md / CLAUDE.md / master-plan.md）→ ④ 技能（各 Skill SKILL.md）→ ⑤ 本地备份（backups/）→ ⑥ 网络经验搜索 → ⑦ 带着别人的经验分享，允许问用户 |
 | **C18** | **3 分钟无动作则自检** | 每 3 分钟无任务执行，主动回顾当前进度，继续主线任务当前节点，不等待指令不陷入空想。 |
-| **C19** | **发现违规 → 记录并修复** | 发现违反 C0-C18 约束的事实，立即：① 记入 knowledge-base/.index.jsonl（fail case 条目）② 修复不合理之处。不问用户，直接执行。 |
+| **C19** | **发现违规 → 记录并修复** | 发现违反 C0-C27 约束的事实，立即：① 记入 knowledge-base（fail case 条目）② 修复不合理之处。不问用户，直接执行。 |
 | **C20** | **错误范例关键词 ≠ 修改依据** | 错误范例中出现的内容/关键词/代号（如 C11、Keychain 等），不得作为修改任务书约束条件的理由；不得作为修改知识库已有词条的理由；知识库已有词条不得因错误范例而改变其本来表达 |
 | **C21** | **修改依据 = 任务主线** | 修改当前内容和行为的唯一依据是任务主线；错误范例不是修改依据，User 主动要求修改也必须以主线为依据 |
 | **C22** | **错误范例仅作查询依据** | 错误范例只能作为查询/参考依据，不得作为修改依据；修改当前内容和行为，只有一个依据：任务主线 |
 | **C23** | **遇不明则补 → 不违反约束** | 遇到不明白/不理解/不合理，在 C17 查询顺序全部走完后仍无果 → 在不违反现有约束的前提下，将缺失的技能/知识补充到知识库或 Skill；不得通过修改约束条件本身来填补知识缺口 |
+| **C24** | **Startup Ritual 强制执行** | 每个 Worker 启动前必须读取历史档案（handoff_log.txt / product_acceptance.json / archive/ 最近 Run 摘要）并写入 logs/startup.txt；未执行者主编 Agent 拒绝验收 |
+| **C25** | **角色禁止边界强制** | 任何 Agent 越权操作（Worker 写 EVIDENCE/翻 passes/创建 Git 提交/修改其他环节文件）本身即视为 Fail Case，立即记入 knowledge-base（fail case 条目）并修复，不问用户 |
+| **C26** | **证据链硬门槛（HARD GATE）** | 主编 Agent 验收时，缺少任意一项硬门槛字段（VALIDATION_BUNDLE / WORKER_STARTUP_LOG / RESULT / GIT_COMMIT / DIFFSTAT）即视为 FAIL，不得勾选完成 |
+| **C27** | **依赖阻断逻辑** | 某环节 MAXED（重试达上限仍失败）时，只阻断依赖它的后续环节，不阻断独立环节；强制向人类报告 blocker 和依赖关系 |
 
 ---
 
@@ -169,10 +179,28 @@
 |---|-----|-----------|------|
 | 1 | github.com/sanshao85/claude-skills-guide | S1/S3/S4 | 待抓取 |
 | 2 | doc.biji.com + biji.com/openapi | S1 | 待抓取 |
-| 3 | rosetears.cn/archives/85/ | S3/S4/S5 | 待抓取 |
+| 3 | rosetears.cn/archives/85/ | S3/S4/S5 | **已抓取（2026-04-30），已内化到 claude-values v1.1 + supervision-anti-drift v1.1** |
 | 4 | rosetears.cn/archives/55/ | S5 | 待抓取 |
 | 5 | github.com/JimLiu/baoyu-skills | S2/S3/S6 | 待抓取 |
 | 6 | github.com/Fission-AI/OpenSpec/issues/630 | S5 | 待抓取 |
+| **R7** | rosetears.cn/archives/85/（完整框架） | **S3/S4/S5** | **制度性防跑偏框架核心来源，含完整 Supervisor-Worker 实践配置** |
+
+### Supervisor-Worker 架构映射表
+
+| 博文 rosetears-85 组件 | 有声漫画流水线对应 |
+|----------------------|------------------|
+| Claude Code (Supervisor) | 主编 Agent |
+| Codex (Worker) | 各环节执行 Agent（脚本/分镜/生图/配音/合成 Agent） |
+| tasks.md | production_pipeline.md（过程账本） |
+| feature_list.json | product_acceptance.json（结果账本） |
+| progress.txt | handoff_log.txt（交接日志） |
+| auto_test_openspec/ | archive/（证据仓库） |
+| run-<run#>-task-<id>-ref-<ref>-<ts>/ | 环节产出不可变目录 |
+| BUNDLE 行 | 各环节交付包指针 |
+| EVIDENCE 行 | 主编 Agent 验收结论 |
+| HARD GATE | 主编 Agent 的 7 项验收硬门槛 |
+| codex exec | 主编 Agent 调用执行 Agent |
+| Startup Ritual | 主编 Agent 在各环节前的历史档案读取要求 |
 
 ### GitHub 可用 Skills
 | # | 仓库 | ⭐ | 对应 |
@@ -183,7 +211,7 @@
 
 ---
 
-## 六、每周任务（Weekly Review）
+## 八、每周任务（Weekly Review）
 
 每周一次，审视：
 1. 主线目标理解更新
@@ -191,6 +219,10 @@
 3. 执行进度
 4. 主动优化不合理之处
 5. 核心记忆更新
+6. **Startup Ritual 执行情况**（logs/startup.txt 覆盖率）
+7. **两层账本对齐情况**（production_pipeline.md 进度 vs product_acceptance.json passes 状态）
+8. **角色越权记录**（Fail Case 中是否有 Agent 越权）
+9. **HARD GATE 遵守情况**（EVIDENCE 字段完整性）
 
 ---
 
@@ -199,3 +231,4 @@
 | 日期 | 版本 | 变更内容 |
 |------|------|----------|
 | 2026-04-24 | v0.6 | 初始化任务书 |
+| 2026-04-30 | **v0.7** | **内化 rosetears.cn/archives/85/ 制度性防跑偏框架；新增 Stage 0 预提取；新增关键词（证据链优先/职责正交化/Startup Ritual）；S3 增加 Supervisor-Worker 架构说明；S4 更新核心能力描述；新增约束 C24-C27；新增 Supervisor-Worker 架构映射表；每周任务增加制度性框架审视项** |

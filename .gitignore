@@ -20,3 +20,6 @@ tasks/pratiyush-llm-wiki/
 tasks/audio-comic-skills/backups/*.tar.gz
 
 # .enc files are git-tracked (encrypted backup mechanism). Do NOT add to gitignore.
+
+# API Key 配置（HC-API1：禁止远程备份）
+*.local.json

@@ -240,5 +240,19 @@
   ],
   "kb-rust-v2-需求文档": [
     "experience/C-DEV-项目目录约束.md"
+  ],
+  "compound-engineering": [
+    "experience/compound-engineering-plugin学习心得.md"
+  ],
+  "skill-design": [
+    "experience/compound-engineering-plugin学习心得.md"
+  ],
+  "复利化": [
+    "experience/compound-engineering-plugin学习心得.md"
+  ],
+  "制度性防跑偏机制.md": [
+    "skills/supervision-anti-drift.md",
+    "skills/claude-values.md",
+    "experience/有声漫画-Skills-全景图.md"
   ]
 }

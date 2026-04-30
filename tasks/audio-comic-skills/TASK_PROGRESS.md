@@ -1,5 +1,5 @@
 # 任务进度表：有声漫画自动化生产 Skills 体系
-## v0.9 | 2026-04-25 | 最后更新：2026-04-25
+## v0.9 | 2026-04-25 | 最后更新：2026-04-30
 
 ---
 
@@ -35,8 +35,8 @@
 | S0 task-book-keeper | ✅ |
 | S1 knowledge-base-manager | ✅ |
 | S2 comic-style-consistency | ✅ |
-| S3 audio-comic-workflow | ✅ |
-| S4 supervision-anti-drift | ✅ |
+| S3 audio-comic-workflow | ✅ v1.0 |
+| S4 supervision-anti-drift | ✅ v1.1（2026-04-30 制度性防跑偏框架内化）|
 | S5 self-optimizing-yield | ✅ |
 
 ---
@@ -76,6 +76,8 @@
 | claude-first-check | 先查再动（遇到工作要求） | ✅ 2026-04-25 |
 | claude-error-handler | 错误处理（C17→C19→C20→C23） | ✅ 2026-04-25 |
 | claude-scope-judge | 范围判定（主任务=边界） | ✅ 2026-04-25 |
+| chinese-thinking | 中文思维锚定 | ✅ 2026-04-30 |
+| **claude-values** | **价值观与主任务理解（制度性防跑偏 v1.1）** | **✅ v1.1 2026-04-30** |
 
 ---
 
@@ -170,5 +172,17 @@
 | 2026-04-24 | 启动自提醒写入 ~/.claude/memory-store.jsonl |
 | 2026-04-24 | 清洗 reference-01（移除 HTML 垃圾，保留 2509 行） |
 | 2026-04-24 | 重写 reference-02（Get 笔记 API 文档站点 URL 变更，手动整理） |
+
+### 2026-04-30 备份记录
+| 时间 | 操作 |
+|------|------|
+| 2026-04-30 | 深读 rosetears.cn/archives/85/ 全文（~131KB，6次分段读取） |
+| 2026-04-30 | 内化制度性防跑偏框架到知识库：新增 KB 条目"制度性防跑偏机制.md" |
+| 2026-04-30 | 更新 claude-values SKILL.md → v1.1（新增 6 项核心价值观） |
+| 2026-04-30 | 更新 supervision-anti-drift SKILL.md → v1.1（新增 Governance/Startup Ritual/两层账本/Immutable Run Folder/HARD GATE） |
+| 2026-04-30 | 更新 TASK_REQUIREMENTS.md → v0.7（C24-C27 新增；Stage 0 预提取；Supervisor-Worker 架构映射表） |
+| 2026-04-30 | 更新 TASK_PROGRESS.md（标注 2026-04-30 变更记录） |
+| 2026-04-30 | 知识库 .index.jsonl 更新（新增制度性防跑偏机制条目，更新 supervision-anti-drift 反链） |
+| 2026-04-30 | 参考资料 R7 新增（rosetears-85 完整框架） |
 
 ---
