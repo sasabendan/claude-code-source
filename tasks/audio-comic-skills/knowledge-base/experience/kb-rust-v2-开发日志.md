@@ -59,3 +59,7 @@ status: stable
 - 6 命令：init / add / list / query / search / rebuild
 - frontmatter 解析：name / created / tags（YAML 数组或逗号分隔）
 
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

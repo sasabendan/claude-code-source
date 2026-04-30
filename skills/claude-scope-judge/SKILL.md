@@ -25,3 +25,12 @@ Do NOT use when: 用户的请求明确在主线任务范围内且有明确授权
 - git 历史中不存在的
 - Skill SKILL.md 不引用的
 - TASK_REQUIREMENTS/PROGRESS/master-plan/CLAUDE 中没有出现过的
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：C15（分叉任务管理）/ C17（范围判定）

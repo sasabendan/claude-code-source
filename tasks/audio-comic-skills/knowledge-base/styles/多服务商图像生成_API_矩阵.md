@@ -31,3 +31,7 @@ S2 和 S3 生图环节的 API 选择决策参考。
 ### 原文位置
 `reference-05-baoyu-skills.md` → baoyu-imagine
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[comic-style-consistency]]

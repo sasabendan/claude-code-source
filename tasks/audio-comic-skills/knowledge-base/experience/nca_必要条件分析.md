@@ -28,3 +28,8 @@ tags: [nca, method, bottleneck]
 
 ### 原文位置
 `reference-04-rosetears-55.md`
+
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[supervision-anti-drift]]

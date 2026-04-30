@@ -200,3 +200,13 @@ Stage 0 NCA 不满足 → 不进入 P1 → 修复提取结果后重试
 - [[knowledge-base-manager]]：提供 langextract-pre.sh
 - [[supervision-anti-drift]]：Stage 0 验收
 
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：C17（7环节流水线涉及多 Skill 协作）
+
+

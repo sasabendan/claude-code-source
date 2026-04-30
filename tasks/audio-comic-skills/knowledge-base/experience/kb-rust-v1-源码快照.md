@@ -55,3 +55,8 @@ status: stable
 // kb-rust v1 源码 295 行，详见源文件 kb-rust/archive/v1/main.rs
 // 本条目为快照摘要，源码请查阅归档路径
 ```
+
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

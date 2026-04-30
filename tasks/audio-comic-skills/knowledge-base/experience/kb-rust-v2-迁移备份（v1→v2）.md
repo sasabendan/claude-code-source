@@ -53,3 +53,8 @@ status: stable
 | 2026-04-25 18:20 | v2 开发开始（复制 v1 为 v2/main_v1.rs） |
 | 2026-04-25 18:53 | v2.1.0 完成（678 行，14 命令，R11 需求文档） |
 | 2026-04-26 00:23 | 文件归档（archive/v1/ + archive/v2/） |
+
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

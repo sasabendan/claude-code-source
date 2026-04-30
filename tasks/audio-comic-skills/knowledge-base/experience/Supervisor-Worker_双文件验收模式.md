@@ -30,3 +30,7 @@ tasks.md 中每个 checkbox 必须恰好包含一个 `[#R<n>]`，映射到 featu
 ### 原文位置
 `reference-03-rosetears-85.md`
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[supervision-anti-drift]]

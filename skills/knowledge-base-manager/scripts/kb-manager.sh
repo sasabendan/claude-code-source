@@ -1,10 +1,36 @@
 #!/bin/bash
 # kb-manager.sh - 知识库管理脚本
 # 支持：得到笔记API + GitHub 双源，增量式 Wiki，Obsidian 双链格式
+# CWD 自适应：KB_DIR 四级优先级自动定位，无需外部告知
 
 set -e
 
-KB_DIR="${KB_DIR:-$PWD/knowledge-base}"
+# 知识库自定位（四级优先级）
+_kb_find() {
+    # 1. $KB_DIR（环境变量，最高）
+    # 2. $AUDIO_COMIC_KB（环境变量，次高）
+    # 3. $CWD/knowledge-base/
+    # 4. 向上查找 tasks/*/knowledge-base/
+    local KB_DIR="${KB_DIR:-${AUDIO_COMIC_KB:-}}"
+    if [ -n "$KB_DIR" ] && [ -d "$KB_DIR" ]; then
+        echo "$KB_DIR"
+        return
+    fi
+    if [ -d "$PWD/knowledge-base" ]; then
+        echo "$PWD/knowledge-base"
+        return
+    fi
+    # 向上两级查找 tasks/*/knowledge-base/
+    local UP_DIR
+    for UP_DIR in "$PWD/.." "$PWD/../.."; do
+        local FOUND
+        FOUND=$(find "$UP_DIR" -maxdepth 2 -name "knowledge-base" -type d 2>/dev/null | grep -v "_compiled" | grep -v "archive" | head -1)
+        [ -n "$FOUND" ] && echo "$FOUND" && return
+    done
+    echo "$PWD/knowledge-base"
+}
+
+KB_DIR="$(_kb_find)"
 INDEX_FILE="$KB_DIR/.index.jsonl"
 
 # --- 帮助 ---

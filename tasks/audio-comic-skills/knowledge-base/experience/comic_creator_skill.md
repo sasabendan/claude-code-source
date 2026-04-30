@@ -23,3 +23,8 @@ Claude Code 专业叙事引擎，用于从文本/源文档生成知识漫画。
 - 技术文档转漫画教程
 - 传记/历史可视化
 - 商业案例/培训材料
+
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[comic-style-consistency]]

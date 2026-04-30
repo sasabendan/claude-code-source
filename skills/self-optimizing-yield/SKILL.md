@@ -280,5 +280,11 @@ rigor_gaps_assessment:
   boundary_check: "极端长文本场景未覆盖 → 加入 long-doc test"
   logic_chain_check: "情感参数传递链路自洽 ✓"
 ---
-```
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：C17-C23（ce-compound 飞轮/5维重叠检测）
 

@@ -66,3 +66,11 @@ recommendation: <优化建议>
 ## 代码入口
 
 `skills/claude-usage-monitor/scripts/usage-calculator.sh`
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖

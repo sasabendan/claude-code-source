@@ -17,3 +17,7 @@ Codex 提案模板，覆盖 project.md 填写 + 首个变更提案
 - Supervisor 框架：`reference-03-rosetears-85.md`
 - 操作手册中的"需要更改的文件"部分有详细说明
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[supervision-anti-drift]]

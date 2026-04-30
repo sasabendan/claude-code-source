@@ -32,3 +32,6 @@ drift_val = 1 - coverage
 ### 原文位置
 `skills/supervision-anti-drift/scripts/supervisor.sh`（已实现）
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[supervision-anti-drift]]

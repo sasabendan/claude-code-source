@@ -181,3 +181,12 @@ bash skills-test/trigger-test.sh
 - `references/schemas.md` — JSON 结构规范
 - `agents/grader.md` — 评分规则
 - `agents/analyzer.md` — 结果分析规则
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：C23（补技能不补约束，创建 Skill 时必须遵循）

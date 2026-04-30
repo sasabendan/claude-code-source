@@ -1,0 +1,151 @@
+---
+name: knowledge-base-manager
+description: 本地知识库管理，用于原著细节记录、世界观设定、角色设定、参考资料查询。当用户说"查询知识库"、"更新经验"、"获取参考素材"、"添加知识"时触发。集成得到笔记 OpenAPI 和 GitHub 作为双数据源，采用增量式 Wiki 架构（非传统 RAG），支持 Obsidian 双链格式。所有知识库内容为核心资产。
+Do NOT use when: 用户想删除知识库条目（应用 claude-file-safety）。加密备份知识库（应用 encrypted-backup）。
+---
+
+# Skill: knowledge-base-manager（知识库管理）
+
+## 功能定位
+管理有声漫画生产的知识库，记录原著细节、世界观、角色设定。
+
+## 知识库自定位（CWD 自适应）
+
+本 Skill 不依赖外部告知 KB 位置，自带四层定位逻辑：
+
+```bash
+# 优先级（从高到低）
+KB_PATH=
+  1. $KB_DIR（环境变量，最高）
+  2. $AUDIO_COMIC_KB（环境变量，次高）
+  3. $CWD/knowledge-base/（次高）
+  4. $(find . -maxdepth 3 -name ".index.jsonl" -path "*/knowledge-base/*" 2>/dev/null | grep -v _compiled | head -1 | xargs dirname)（兜底）
+```
+
+调用时优先使用环境变量，未设置时自动从 CWD 向上查找，确保任何项目下开箱即用。
+
+## 核心能力
+
+| 能力 | 说明 |
+|------|------|
+| 双源数据 | 得到笔记 API [网络] + GitHub [网络] |
+| 增量式 Wiki | 非传统 RAG，持久化知识库 |
+| Obsidian 双链 | [[双向链接]] 格式支持 |
+| 版本管理 | Git 版本控制 |
+| 知识打磨 | 知识沉淀与优化 |
+
+## 输入
+
+```yaml
+action: 查询|添加|更新|搜索
+source: biji|github|local
+query: <查询内容，可选>
+content: <添加/更新内容，可选>
+```
+
+## 输出
+
+```yaml
+status: success
+results: <查询结果>
+source: <数据源>
+format: markdown|obsidian
+```
+
+## 触发场景
+
+| 场景 | 示例 |
+|------|------|
+| 查询知识库 | "查询角色设定" / "搜索世界观" |
+| 更新经验 | "添加新角色" / "更新剧情设定" |
+| 获取参考 | "获取参考资料" / "查询原著细节" |
+
+## 数据结构
+
+```
+knowledge-base/
+├── characters/       # 角色设定
+│   ├── protagonist.md
+│   └── antagonist.md
+├── world/           # 世界观设定
+│   ├── timeline.md
+│   └── locations.md
+├── plot/            # 剧情细节
+│   └── chapters/
+├── reference/       # 参考资料
+│   └── sources.md
+└── obsidian/        # Obsidian 格式备份
+    └── .gitkeep
+```
+
+## 双源架构
+
+```mermaid
+graph LR
+    A[原著文本] --> B{知识库录入}
+    B --> C[得到笔记 API]
+    B --> D[GitHub 备份]
+    C --> E[增量式 Wiki]
+    D --> E
+    E --> F[Obsidian 双链]
+```
+
+## 增量式 Wiki 特点
+
+| 传统 RAG | 增量式 Wiki |
+|----------|-------------|
+| 每次重新检索 | 持久化知识积累 |
+| 无版本管理 | Git 版本控制 |
+| 孤立片段 | 双向链接网络 |
+
+## 参考资料
+
+- Astro-Han/karpathy-llm-wiki（增量式 Wiki 架构）
+- eugeniughelbur/obsidian-second-brain（Obsidian 双链）
+- doc.biji.com（得到笔记 API）
+
+## 验收标准
+
+- [ ] 支持得到笔记 API 调用
+- [ ] 支持 GitHub 备份
+- [x] Obsidian 双链格式兼容（C23）
+- [x] 增量式知识更新（JSONL 追加）
+- [x] Git 版本控制
+- [x] Rust 重写（C1）: kb-rust
+
+## 代码入口
+
+### Rust 工具（v2，当前版本）
+
+```bash
+# 位置
+kb-rust/v2/target/release/kb-rust-v2 --kb-dir knowledge-base <cmd>
+
+# 命令（v2 新增 workflow / chars / backlinks / ingest / lint）
+kb-rust-v2 init              # 初始化目录结构（含 _compiled/ + .project.json）
+kb-rust-v2 list              # 列出所有条目
+kb-rust-v2 query <type>      # 按类型查询
+kb-rust-v2 search <kw>       # 搜索名称/标签（大小写不敏感）
+kb-rust-v2 rebuild           # 重建索引 + 双链解析 + _index.md + _overview.md
+kb-rust-v2 add <name> <type> <tags>  # 追加索引条目（含 updated/status 字段）
+kb-rust-v2 workflow          # 输出工作流说明书（WORKFLOW.md）
+kb-rust-v2 chars             # 列出角色及状态（stable/wip/retired）
+kb-rust-v2 backlinks <target>  # 查找指向 target 的所有文件
+kb-rust-v2 ingest <file>    # 摄入源文件 → 更新 _log.md
+kb-rust-v2 lint              # 健康检查（孤立页面/bad entries/总条目/双链统计）
+kb-rust-v2 project-info      # 输出项目元数据（.project.json）
+kb-rust-v2 sync-biji        # 同步 GetBiji API（需 --features biji）
+```
+
+### v2 文档
+
+| 文档 | 位置 | 说明 |
+|------|------|------|
+| SPEC.md | kb-rust/v2/SPEC.md | v2 规格说明书（三层架构/命令/数据流） |
+| REQUIREMENTS_V2.md | kb-rust/v2/REQUIREMENTS_V2.md | v2 需求文档（R1-R11，含态控设计） |
+| CHANGELOG.md | kb-rust/v2/CHANGELOG.md | v2 开发日志（版本记录/Bug修复） |
+| REFERENCE_PROJECTS.md | kb-rust/v2/REFERENCE_PROJECTS.md | 参考项目分析（Karpathy/nashsu/lucasastorian） |
+
+### Python 脚本（备用）
+
+`skills/knowledge-base-manager/scripts/kb-manager.sh`

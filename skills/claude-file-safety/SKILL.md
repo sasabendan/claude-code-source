@@ -89,3 +89,12 @@ cp <文件> tasks/audio-comic-skills/backups/$(basename <文件>).bak.$(date +%Y
 
 **场景**：用户要求删除 WRAP.md
 **判定**：绿灯 → 可删除 → 先备份，执行删除，验证 git status
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：hc-ap3（禁止自动删除核心资产）

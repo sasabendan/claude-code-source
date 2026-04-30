@@ -17,3 +17,7 @@ Supervisor 主命令实现，单次运行推进一个 tasks.md checkbox
 - Supervisor 框架：`reference-03-rosetears-85.md`
 - 操作手册中的"需要更改的文件"部分有详细说明
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[supervision-anti-drift]]

@@ -138,3 +138,11 @@ LangExtract 的 character 提取结果可直接作为角色锚定输入：
 - char_interval 必须存在（用于溯源）
 - emotional_baseline 用于生图时的表情控制
 
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+

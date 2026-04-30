@@ -102,3 +102,12 @@ next_action: <下一步操作>
 - [[claude-file-safety]]：删除前判定
 - [[skill-creator]]：新建/优化 Skill
 - [[claude-error-handler]]：FC004 等错误记录（C17→C19）
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-26)
+- 初始版本：KB 管理监工 Skill 建立
+- 定位：所有 KB 操作前必须调用，防止越权/漂移
+- 决策矩阵 + 触发检查清单 + 已知漂移模式

@@ -9,3 +9,7 @@ status: stable
 
 # kb-rust v1 配置
 
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

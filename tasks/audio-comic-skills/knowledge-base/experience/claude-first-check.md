@@ -45,14 +45,43 @@ status: stable
 | 怀疑某个功能做过但找不到 | git log 查 commit 历史 |
 | 遇到「为什么没做 X」 | 查 TASK_PROGRESS.md fail case + git log |
 
-## 心跳机制（C18）
+## 心跳机制（C18）- 自动触发闭环
+
+### SessionStart Hook → heartbeat-service.sh
 
 ```
-session_gap > 3 分钟 → 自检，继续主线
-session_gap ≤ 3 分钟 → HEARTBEAT_OK
+~/.claude/settings.json SessionStart Hook
+         ↓
+  heartbeat-service.sh（每次会话启动自动执行）
+         ↓
+  计算 session_gap = now - ~/.claude/heartbeat.json mtime（分钟）
+         ↓
+  gap > 3 分钟 → SELF_CHECK → 继续主线当前节点
+  gap ≤ 3 分钟 → HEARTBEAT_OK（无需干预）
+         ↓
+  更新 heartbeat-state.md（下次自检依据）
 ```
+
+### 当前状态（2026-04-27 实测）
+
+- SessionStart Hook 已配置 → `~/.claude/settings.json`
+- heartbeat-service.sh 已创建 → `skills/claude-first-check/scripts/heartbeat-service.sh`
+- 本次 gap = 3047 分钟 → 触发自检，heartbeat-state.md 已更新
+- 当前主线：有声漫画 Skills S0-S5 全部完成，技术债务待推进
 
 ## 与其他 Skill 的关系
 
 - [[claude-scope-judge]]：范围判定，红灯/绿灯
 - [[claude-memory]]：存取具体记忆内容
+
+## 版本历史
+
+### v1.1 (2026-04-27)
+- 心跳机制（C18）自动闭环实现：SessionStart Hook → heartbeat-service.sh
+- 新增 `scripts/heartbeat-service.sh`：gap > 3分钟 → 自动自检 + 更新 heartbeat-state.md
+- Hook 绑定：`~/.claude/settings.json` SessionStart Hook 调用 heartbeat-service.sh
+- 实测：gap=3047分钟，触发自检，heartbeat-state.md 已更新
+
+### v1.0 (2026-04-26)
+- 初始版本：7步检查顺序 + C18 心跳规则文档化
+- claude-first-check SKILL.md 完成

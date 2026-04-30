@@ -95,3 +95,8 @@ tags: obsidian,ai-workflow,第二大脑,贾维斯,自我进化
 - `rosetears_supervisor_framework.md`（Supervisor-Worker 框架）
 - `baoyu_skills_full.md`（baoyu-skills 宝宇 Skills）
 - `comic_style_consistency.md`（风格锚定）
+
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[comic-style-consistency]]

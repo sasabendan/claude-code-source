@@ -1,7 +1,7 @@
 # 知识库索引
 
-最后更新：2026-04-25
-总条目：61
+最后更新：2026-04-30
+总条目：74
 
 ## 经验知识 
 - [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 
@@ -50,10 +50,19 @@
 - [claude-error-handler](experience/claude-error-handler.md) - error-handler,C17-C23,错误记录,fail-case | 2026-04-26
 - [claude-memory](experience/claude-memory.md) - memory,记忆仓库,Keychain,授权管理 | 2026-04-26
 - [claude-values](experience/claude-values.md) - values,价值观,知识库价值层级,主线判断 | 2026-04-26
-- [有声漫画 Skills 全景图](experience/有声漫画-Skills-全景图.md) - skills,overview,全景图,角色分工,监工 | 2026-04-26
 - [claude-usage-monitor](experience/claude-usage-monitor.md) - usage-monitor,Claude额度,token消耗,配额优化 | 2026-04-26
 - [claude-usage](experience/claude-usage.md) - usage,用量追踪,成本计算,phuryn | 2026-04-26
 - [kb-rust 归档迁移记录](experience/kb-rust-归档迁移记录.md) - kb-rust,archive,migration,v1,v2 | 2026-04-26
+- [有声漫画 Skills 全景图](experience/有声漫画-Skills-全景图.md) - skills,overview,全景图,角色分工,监工 | 2026-04-26
+- [deepseek-project-review-prompt](experience/deepseek-project-review-prompt.md) - deepseek,project-review,赫氏门徒,提示词,项目审查,pre-check | 2026-04-27
+- [API Key 安全规格](experience/API-Key-安全规格.md) - API-Key,安全规格,密钥管理,HC-API1,HC-API2,HC-API3,禁止外泄 | 2026-04-27
+- [OpenClaw 赫氏门徒审查报告修正](experience/OpenClaw-赫氏门徒-审查报告修正.md) - OpenClaw,赫氏门徒,审查报告修正,实际产出,Pipeline,低估 | 2026-04-27
+- [复利化审视报告-今日参考项目](experience/复利化审视报告-今日参考项目.md) - 复利化,审视,compound-growth,参考项目,知识库 | 2026-04-28
+- [Rust LLM Wiki 技术栈调研](experience/Rust_LLM_Wiki_技术栈调研.md) - knowledge-base,research,rust,llm-wiki,qdrant,moltis | 2026-04-28
+- [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 2026-04-30
+- [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 2026-04-30
+- [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 2026-04-30
+- [karpathy_llm_wiki_original](experience/karpathy_llm_wiki_original.md) -  | 2026-04-30
 
 ## 风格参数 
 - [多服务商图像生成 API 矩阵](styles/多服务商图像生成_API_矩阵.md) - api,image,provider,minimax | 2026-04-25

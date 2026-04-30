@@ -88,3 +88,8 @@ $BIN --kb-dir "$KB_DIR" rebuild
 |------|------|------|
 | 2026-04-24 | v1.0 | 初始版本，6 命令（init/add/list/query/search/rebuild），Markdown+JSONL 架构 |
 | 2026-04-25 | v2.0 | 归档，v1 锁定不动 |
+
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

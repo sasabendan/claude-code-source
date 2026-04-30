@@ -124,3 +124,11 @@ Share this table when the user asks "how do I use this":
 - Does not parse Claude's web UI conversation history (that needs browser tooling)
 - Does not export whole conversations (use the `claude-export-markdown` skill)
 - Does not sync refs across machines (the user handles that via git / dotfiles if they want)
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖

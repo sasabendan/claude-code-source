@@ -34,3 +34,6 @@ description 是 Level 1 触发的唯一依据，必须写清楚"何时触发"。
 ### 原文位置
 `reference-01-claude-skills-guide.md`
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]

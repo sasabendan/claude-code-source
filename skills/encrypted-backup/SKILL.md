@@ -60,3 +60,12 @@ cat ~/.backup-password
 
 - [[core-asset-protection]]：前置 Skill，HC-AP1 约束确认
 - [[task-book-keeper]]：任务书管理，核心资产子类
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+

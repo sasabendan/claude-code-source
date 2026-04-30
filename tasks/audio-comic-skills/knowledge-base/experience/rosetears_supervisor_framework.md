@@ -45,3 +45,7 @@ openspec/changes/<change-id>/{tasks.md,feature_list.json,progress.txt}
 `reference-03-rosetears-85.md`
 `/Users/jennyhu/Documents/Claude code - openspec - codex(1)/`
 
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]
+- [[supervision-anti-drift]]

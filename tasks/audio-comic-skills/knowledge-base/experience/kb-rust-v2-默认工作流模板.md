@@ -66,3 +66,8 @@ const DEFAULT_WORKFLOW: &str = include_str!("default_workflow.md");
 ```
 
 > 注：选择 `include_str!()` 而非硬编码字符串，是因为硬编码含中文标点的字符串会导致 Rust 解析器报错（fullwidth punctuation）
+
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

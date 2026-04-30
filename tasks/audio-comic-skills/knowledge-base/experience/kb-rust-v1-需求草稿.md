@@ -43,3 +43,8 @@ status: stable
 
 - 完整需求文档见：`kb-rust/archive/v2/REQUIREMENTS_V2.md`（含 R11）
 - 规格说明见：`kb-rust/archive/v2/SPEC.md`
+
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]

@@ -29,3 +29,7 @@ https://github.com/Fission-AI/OpenSpec/issues/630
 ### 原文位置
 `reference-06-openspec-630.md`
 
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[audio-comic-workflow]]

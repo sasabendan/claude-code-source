@@ -1,0 +1,220 @@
+## **Claude Code扩展类型深度解析：选择正确 抽象的工程实践** 
+
+Get达人 2026-04-26 
+
+**==> picture [23 x 22] intentionally omitted <==**
+
+## 核心观点（引言） 
+
+在为Claude Code构建了95个钩子、44个技能、85个命令和11个规则文件后，作者发 现： **选择错误的抽象比构建错误的功能更浪费时间** 。本文是AI工程系列的一部分，记录了 智能体基础设施在生产环境中的成熟过程。一个本应作为规则的技能导致上下文膨胀了 40%，而一个本应作为技能的命令，则需要用户在处理API端点时每次都记得输入 / fastapi 。 
+
+**Claude Code有四种扩展类型，每种类型解决不同问题** ：规则（Rules）用于始终启用的 不变量，技能（Skills）用于自动调用的领域专业知识，命令（Commands）用于用户 触发的工作流，子智能体（Subagents）用于隔离的任务执行。决策框架本身很简单，但 识别错误的抽象并进行迁移，才是节省时间的关键。 
+
+**==> picture [23 x 22] intentionally omitted <==**
+
+## TL;DR（摘要） 
+
+Claude Code提供四种扩展其行为的方式：命令（用户触发的提示）、技能（自动调用的 上下文）、子智能体（委托的任务执行器）和规则（始终启用的约束）。在组织139个扩 展后，作者发现决策框架很简单：规则用于不变量，技能用于领域专业知识，命令用于工 作流，子智能体用于隔离。困难在于识别错误的选择并进行迁移。 
+
+**==> picture [23 x 22] intentionally omitted <==**
+
+## 四种抽象类型（含实例） 
+
+## Commands: “/commit”及其他84个命令 
+
+命令在用户输入 /command-name 时激活，每个命令都会扩展为一个提示模板。 作者的85个命令包括： 
+
+- /commit （智能git提交） 
+
+- /review （启动代码审查智能体） 
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+   - /deploy （部署检查清单） 
+
+- /publish-check （博客发布前验证） 
+
+- /deliberate （多智能体研究） 
+
+**错误案例** ：最初将 /fastapi 构建为命令，需要按需注入FastAPI模式。但问题在于， 用户有一半时间会忘记输入该命令，导致智能体错过需要强制执行的模式。解决方案是将 /fastapi 迁移为具有自动激活功能的技能。 
+
+## Skills: 44个自动激活的知识模块 
+
+技能会在对话内容匹配其描述时自动激活，无需用户输入命令，系统根据上下文自动注入 相关专业知识。 
+
+技能示例： 
+
+--- description: FastAPI backend development patterns and conventions # FastAPI Skill 
+
+When working on FastAPI endpoints, follow these patterns... 
+
+作者的44个技能涵盖以下领域： 
+
+- **领域知识** （8个）：FastAPI、SwiftUI、HTMX/Alpine、数据库、测试、调试、架 构、安全。 
+
+- **博客基础设施** （7个）：blog-writer-core、blog-evaluator、citation-verifier、 SEO playbook。 
+
+- **哲学/质量** （5个）：Shokunin（匠人精神）、No Shortcuts（不走捷径）、Rubin essence（鲁宾本质）、设计原则。 
+
+- **多智能体** （3个）：deliberation、review、content creation。 
+
+- **项目特定** （4个）：个人网站内容、ResumeGeni博客、Obsidian捕获。 
+
+**40%上下文膨胀事件** ：早期曾将完整的FastAPI模式指南（约800行）放入规则文件，导 致这些内容被加载到每个会话中。当处理iOS应用、CSS或博客内容时，这800行无关的 FastAPI模式会白白消耗上下文令牌。将内容移至描述为“FastAPI后端开发”的技能 后，问题得以解决：该技能仅在处理API相关工作时才会被加载。 
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+## Subagents: 隔离的任务执行器 
+
+子智能体在独立的上下文窗口中运行，拥有受限的工具访问权限和独立的权限设置。 作者使用的子智能体包括： 
+
+- security-reviewer（只读访问，用于OWASP漏洞扫描） 
+
+- test-runner（运行测试并分析失败原因） 
+
+- conventions-reviewer（检查项目是否符合标准） 
+
+**隔离的重要性** ：在进行代码审查时，审查者不应具备编辑文件的权限。技能可以注入审查 知识，但审查操作本身仍在拥有完全写入权限的主上下文中进行。子智能体则从架构层面 强制执行只读访问。 
+
+## Rules: 11个始终启用的约束文件 
+
+规则文件会自动加载到每一次对话中。作者的11个规则文件包括： 
+
+- ~/.claude/rules/ 
+
+- ├── security.md        # 从不提交机密，使用参数化查询 
+
+- ├── git-workflow.md    # 规范提交与分支命名 
+
+- ├── corrections.md     # 始终使用Claude（而非OpenAI），记录当前日期 
+
+- ├── quality-loop.md    # 质量审查循环，自豪感检查 
+
+- ├── api-design.md      # REST约定与响应格式 
+
+- ├── testing.md         # pytest约定与覆盖率目标 
+
+- └── aio.md             # 网络内容的AI概述优化 
+
+**关于大小的教训** ：这11个规则文件总计约180行，每一行都会被加载到每个会话中。最初 有400多行，后来将特定主题的内容迁移到技能中，才得以减少。这180行的规则集涵盖 了真正的不变量（如安全约束、git工作流、修正），而其他所有内容都属于技能范畴。 
+
+**==> picture [17 x 17] intentionally omitted <==**
+
+## 决策框架 
+
+**==> picture [472 x 121] intentionally omitted <==**
+
+**----- Start of picture text -----**<br>
+问题 答案 使用<br>开发者必须显式触发吗？ 是 Command<br>应基于主题激活吗？ 是 Skill<br>应适用于每个会话吗？ 是 Rule<br>**----- End of picture text -----**<br>
+
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+**==> picture [472 x 61] intentionally omitted <==**
+
+**----- Start of picture text -----**<br>
+问题 答案 使用<br>任务需要隔离的上下文/工具吗？ 是 Subagent<br>**----- End of picture text -----**<br>
+
+
+## 迁移模式 
+
+.claude/ 目录的结构经历了三个阶段的演变： 
+
+**阶段1（1-2月）** ：所有内容都放在规则中，导致有400多行始终加载的上下文，其中包含 了iOS模式、FastAPI模式、设计指南、测试标准等，这造成了每个会话的上下文膨胀。 
+
+**阶段2（3-4月）** ：将特定主题的内容迁移到技能中，规则减少到200行，技能增长到20多 个目录，上下文膨胀减少了约40%。 
+
+**阶段3（5月及以后）** ：为需要隔离的任务（如代码审查、安全审计）添加了子智能体。命 令稳定在85个，用于显式工作流；技能增长到44个，增加了领域特定专业知识。 
+
+经验教训是：从规则开始（成本低，始终可用），发现特定主题内容后迁移到技能，仅在 需要隔离时才添加子智能体。 
+
+**==> picture [17 x 17] intentionally omitted <==**
+
+## 强大模式 
+
+通过使用 skills 前置字段，可以将技能注入到子智能体的上下文中： 
+
+--- 
+
+description: Code reviewer with security expertise allowed-tools: [Read, Grep, Glob] skills: [security, testing-philosophy] --- 
+
+Review code for quality, security, and test coverage... 
+
+security 和 testing-philosophy 这两个技能会将其内容注入到子智能体的系 统提示中，使得审查者在隔离的只读上下文中也能获得相应的专业知识。 
+
+作者的审查流程就采用了这种模式：三个子智能体（correctness-reviewer、securityreviewer、conventions-reviewer）各自接收不同的技能注入。正确性审查者获得 
+
+debugging-philosophy 技能，安全审查者获得安全规则集，约定审查者则获得项 目的编码标准。 
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+**==> picture [17 x 17] intentionally omitted <==**
+
+## 生产架构 
+
+~/.claude/ 
+
+├── commands/     # 85个 — 用户触发的工作流 │   ├── commit.md, review.md, deploy.md │   ├── publish-check.md, deliberate.md │   └── morning.md, analytics.md, plan.md │ 
+
+├── skills/       # 44个 — 自动调用的专业知识 │   ├── fastapi/, swiftui/, htmx-alpine/ │   ├── blog-writer-core/, citation-verifier/ │   └── jiro/, no-shortcuts/, rubin-essence/ │ 
+
+├── agents/       # 隔离的任务执行器 
+
+│   ├── security-reviewer.md │   ├── correctness-reviewer.md │   └── conventions-reviewer.md │ 
+
+├── rules/        # 11个文件，约180行 — 始终启用的约束 │   ├── security.md, git-workflow.md │   ├── corrections.md, quality-loop.md │   └── api-design.md, testing.md, aio.md │ 
+
+└── hooks/        # 95个 — 生命周期事件处理程序 
+
+├── git-safety-guardian.sh ├── recursion-guard.sh └── blog-quality-gate.sh 
+
+**==> picture [17 x 17] intentionally omitted <==**
+
+## 关键要点 
+
+## **对于独立开发者** ： 
+
+- 从规则开始，制定项目特定标准（总长度保持在200行以下）。 
+
+- 为最常用的技术栈添加技能，实现自动激活，以消除“忘记调用”的问题。 
+
+- 首先为三个最常见的工作流创建命令。 
+
+- 仅在需要工具限制或上下文隔离时，才添加子智能体。 
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+## **对于团队** ： 
+
+- 在项目级别标准化规则，以实现团队范围内的一致性。 
+
+- 通过公共存储库共享技能，技能在项目间的可移植性是其相对于项目级别配置的主要 优势。 
+
+**==> picture [17 x 17] intentionally omitted <==**
+
+## FAQ 
+
+## Claude Code的四种扩展类型是什么？ 
+
+命令是通过输入 /命令名称 激活的用户触发提示。技能是当对话匹配其描述时自动调用 的上下文模块。规则是加载到每个会话中的始终启用的约束。子智能体是具有受限工具访 问和独立上下文窗口的隔离任务执行器。决策框架是：规则用于不变量，技能用于领域专 业知识，命令用于工作流，子智能体用于隔离。 
+
+## 多少个Claude Code扩展算太多？ 
+
+数量不如分类重要。作者的系统运行着95个钩子、44个技能、85个命令和11个规则文 件，没有性能问题，因为每种类型的加载方式不同。规则（始终启用）应保持在200行以 下。技能仅在相关时加载，因此可以自由增长。命令按需激活。问题不在于数量，而在于 错误分类：曾将特定主题内容放在规则中而不是技能里，导致40%的上下文膨胀，在迁移 到正确的抽象后立即得到解决。 
+
+## 设置Claude Code时应从规则还是技能开始？ 
+
+建议从规则开始，用于定义那些真正的不变量，例如安全约束、Git工作流或代码修正规 范，这些内容适用于每个会话，无论讨论什么主题。请确保规则的总长度保持在200行以 下。接着，为你最常用的技术栈添加技能，其自动激活的特性可以消除“忘记调用”的问 题。然后，为你三个最常见的工作流创建命令。最后，仅在需要工具限制或上下文隔离 （例如进行代码审查）时，才考虑添加子智能体。 
+
+## 如何防止Claude Code会话中的上下文膨胀？ 
+
+关键是将特定主题的内容从规则迁移到技能中。规则会加载到每个会话里，而技能仅在对 话主题匹配其描述时才被加载。例如，作者通过将FastAPI模式、iOS模式和设计指南等 内容移至具有描述性前置内容的技能中，成功将规则文件从400多行缩减到180行，立即 减少了40%的上下文占用。核心原则是：如果某些内容并非与每个会话都相关，那么它就 不应该放在规则里。 
+
+**==> picture [65 x 23] intentionally omitted <==**
+
+## 技能可以跨项目共享吗？ 
+
+是的，可以共享。存储在 ~/.claude/skills/ 目录下的技能可以在所有项目中使 用。项目特定的技能则位于项目目录的 .claude/skills/ 中。技能在项目间的可移 植性，是其相对于项目级别配置的主要优势。团队可以通过公共代码仓库来共享技能，从 而确保每位成员都能访问相同的领域专业知识和质量标准。 
+
+**==> picture [65 x 23] intentionally omitted <==**
+

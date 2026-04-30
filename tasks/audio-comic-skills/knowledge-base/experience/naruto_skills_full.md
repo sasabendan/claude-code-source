@@ -17,3 +17,7 @@ tags: [skill, naruto, reference]
 - AI生成: image-gen (Google/OpenAI)
 - 工具: url-to-markdown
 - 开发: smart-git-commit (智能 Git 提交)
+
+## 相关链接
+- [[audio-comic-workflow]]
+- [[knowledge-base-manager]]

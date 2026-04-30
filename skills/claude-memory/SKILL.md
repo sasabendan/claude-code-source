@@ -107,3 +107,12 @@ python3 skills/claude-memory/scripts/memory_store.py delete --key <key>
 ## 初始化（每次新会话开始时）
 
 如果涉及之前提到的配置，优先从 `~/.claude/memory-store.jsonl` 查询，而不是问用户。
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖
+- 关联约束：hc-api2（禁止复制传输 API Key）

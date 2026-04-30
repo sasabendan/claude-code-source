@@ -6,8 +6,10 @@
 
 ## 每次心跳（会话启动）
 
-1. 读取 `tasks/audio-comic-skills/heartbeat-state.md`
-2. 读取 `tasks/audio-comic-skills/HEARTBEAT.md`
+1. CWD 自适应定位 heartbeat-state.md
+   → 优先级：① $(find . -maxdepth 3 -name heartbeat-state.md 2>/dev/null | head -1)
+   → ② $CWD/tasks/*/heartbeat-state.md
+2. CWD 自适应定位 HEARTBEAT.md（同目录）
 3. 计算 `session_gap_minutes`
 4. 记录 `last_heartbeat_at`
 

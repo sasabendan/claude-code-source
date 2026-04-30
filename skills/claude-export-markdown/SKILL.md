@@ -122,3 +122,11 @@ image_count: 3
 - Does not export multi-turn conversations (only one assistant reply per run)
 - Does not convert to HTML, PDF, or other formats (use `pandoc` downstream if needed)
 - Does not manage reusable snippet references (see `claude-cite-reference`)
+
+---
+
+## 版本历史
+
+### v1.0 (2026-04-30)
+- 补录版本历史规则（约束元数据库建设 #BR-002）
+- 嵌入 version-history 约束：版本号只追加不覆盖

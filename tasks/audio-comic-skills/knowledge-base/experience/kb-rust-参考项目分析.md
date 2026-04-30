@@ -48,3 +48,7 @@ Karpathy llm-wiki（origin，桌面 /Users/jennyhu/Desktop/llmwiki.md 为 canoni
 - 增量式 Wiki 架构（非传统 RAG）
 - Obsidian 双链格式支持
 
+## 相关链接
+- [[kb-rust 归档迁移记录]]
+- [[knowledge-base-manager]]
+- [[kb-rust v2]]
