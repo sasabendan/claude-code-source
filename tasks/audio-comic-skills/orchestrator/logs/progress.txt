@@ -2,3 +2,4 @@
 # 开始时间：2026-04-30T14:47:07Z
 
 [2026-04-30T14:47:07Z] Orchestrator 初始化完成，等待 Supervisor 接管
+[2026-04-30T15:04:39Z] Supervisor 确权：P1 → passes=true
