@@ -1,0 +1,13 @@
+{
+  "project": "audio-comic-production",
+  "version": "1.0",
+  "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "features": [
+    {"ref": "P1", "description": "脚本生成：忠于原著，台词完整", "criteria": {"word_count_delta": "< 10%", "dialogue_complete": true}, "passes": false},
+    {"ref": "P2", "description": "分镜设计：场景完整，动作连贯", "criteria": {"scene_count": "100%"}, "passes": false},
+    {"ref": "P3", "description": "生图渲染：风格一致，画面精美", "criteria": {"style_consistency": "≥ 0.85"}, "passes": false},
+    {"ref": "P4", "description": "配音合成：情感准确，声音一致", "criteria": {"emotion_accuracy": "≥ 0.80"}, "passes": false},
+    {"ref": "P5", "description": "成品合成：音画同步，节奏流畅", "criteria": {"sync_rate": "≥ 0.90"}, "passes": false},
+    {"ref": "P6", "description": "排版发布：格式规范，发布就绪", "criteria": {"format_compliance": "100%"}, "passes": false}
+  ]
+}
