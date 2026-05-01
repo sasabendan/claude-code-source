@@ -35,7 +35,10 @@
     "styles/多服务商图像生成_API_矩阵.md",
     "styles/漫画画风___基调风格矩阵.md",
     "plot/分镜叙事结构要素.md",
-    "plot/角色一致性管理策略.md"
+    "plot/角色一致性管理策略.md",
+    "experience/制度性防跑偏机制.md",
+    "experience/claude-values.md",
+    "skills/supervision-anti-drift.md"
   ],
   "API-Key-安全规格": [
     "experience/有声漫画-Skills-全景图.md",
@@ -127,7 +130,11 @@
     "experience/downloaded_openspec-proposal_md.md",
     "experience/OpenClaw-赫氏门徒-审查报告修正.md",
     "experience/NCA_三步必要条件筛选法.md",
-    "plot/角色一致性管理策略.md"
+    "plot/角色一致性管理策略.md",
+    "experience/制度性防跑偏机制.md",
+    "experience/claude-values.md",
+    "experience/task-book-keeper.md",
+    "skills/supervision-anti-drift.md"
   ],
   "self-optimizing-yield": [
     "experience/有声漫画七环节流水线.md",
@@ -143,7 +150,9 @@
     "experience/有声漫画-Skills-全景图.md",
     "experience/core-asset-protection.md",
     "experience/GitHub-加密备份日志.md",
-    "experience/encrypted-backup.md"
+    "experience/encrypted-backup.md",
+    "skills/supervision-anti-drift.md",
+    "experience/claude-values.md"
   ],
   "claude-memory": [
     "experience/有声漫画-Skills-全景图.md",
@@ -154,7 +163,9 @@
   ],
   "claude-values": [
     "experience/有声漫画-Skills-全景图.md",
-    "experience/claude-scope-judge.md"
+    "experience/claude-scope-judge.md",
+    "experience/制度性防跑偏机制.md",
+    "skills/supervision-anti-drift.md"
   ],
   "kb-rust-归档迁移记录": [
     "experience/kb-rust-v1-使用说明.md",
@@ -194,6 +205,12 @@
   "kb-rust-v2-规格说明书": [
     "experience/C-DEV-项目目录约束.md",
     "experience/kb-rust-归档迁移记录.md"
+  ],
+  "制度性防跑偏机制": [
+    "experience/claude-values.md",
+    "skills/supervision-anti-drift.md",
+    "skills/audio-comic-workflow.md",
+    "skills/task-book-keeper.md"
   ],
   "kb-rust-v2": [
     "experience/kb-rust-v1-使用说明.md",
@@ -240,5 +257,11 @@
   ],
   "kb-rust-v2-需求文档": [
     "experience/C-DEV-项目目录约束.md"
+  ],
+  "chinese-thinking": [
+    "skills/audio-comic-workflow.md",
+    "skills/supervision-anti-drift.md",
+    "experience/claude-values.md",
+    "experience/task-book-keeper.md"
   ]
 }
