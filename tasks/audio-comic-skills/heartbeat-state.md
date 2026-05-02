@@ -3,7 +3,7 @@
 last_heartbeat_at: 2026-05-01T21:50:00
 last_session_end_at: 2026-05-01T21:50:00
 session_gap_minutes: 0
-last_heartbeat_result: skill-change-test.sh v1.1完成；24/24 Skills全通过；主线暂停等待openspec安装；战略顾问角色启动；Serper MCP已注册（settings.json）；KB API Key安全规格已更新
+last_heartbeat_result: Serper MCP已注册（重启生效）；战略顾问方法论KB条目已形成（v1.0）；三步工作法+三条教训+三重身份已入KB；配置清单已更新；主线暂停等待openspec安装
 
 ## 每日授权
 - 2026-04-30: BR-001/#BR-002 ✅完成 + BR-003 Supervisor-Worker多Agent流水线（方案A）已授权；主线技术债务推进（已授权）

@@ -263,5 +263,11 @@
     "skills/supervision-anti-drift.md",
     "experience/claude-values.md",
     "experience/task-book-keeper.md"
+  ],
+  "战略顾问方法论": [
+    "experience/战略顾问角色.md"
+  ],
+  "战略顾问角色": [
+    "experience/战略顾问方法论.md"
   ]
 }

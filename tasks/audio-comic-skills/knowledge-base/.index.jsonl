@@ -76,3 +76,4 @@
 {"entry_type": "skills", "name": "kb-overview-supervisor", "file": "skills/kb-overview-supervisor.md", "tags": "kb-overview-supervisor", "created": "2026-04-25T23:14:17Z", "updated": "2026-04-25T23:14:17Z", "status": "stable", "backlinks": []}
 {"entry_type": "skills", "name": "pdf-ingest", "file": "skills/pdf-ingest.md", "tags": "pdf-ingest", "created": "2026-04-27T12:58:28Z", "updated": "2026-04-30T13:12:29Z", "status": "stable", "backlinks": []}
 {"entry_type": "skill", "name": "chinese-thinking", "file": "skills/chinese-thinking.md", "tags": "中文思维,思考锚点,产出物导向,主线,三段式", "created": "2026-05-01T17:19:00Z", "updated": "2026-05-01T21:29:10Z", "status": "stable", "backlinks": []}
+{"entry_type": "experience", "name": "战略顾问方法论", "file": "experience/战略顾问方法论.md", "tags": "战略顾问,矛盾论,追问澄清,反对席,关键卡点,实践论,知识库优先", "created": "2026-05-01T22:20:00Z", "updated": "2026-05-01T22:20:00Z", "status": "stable", "backlinks": ["experience/战略顾问角色.md"]}
