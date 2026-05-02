@@ -186,7 +186,119 @@ bash skills-test/trigger-test.sh
 
 ## 版本历史
 
+### v1.1 (2026-05-01)
+- 新增"技能修改自动测试"章节
+- 定义 Skill Change Pipeline：三步检测（索引同步/功能可用性/反链一致性）
+- 关联约束：C19（发现违规→记录并修复，前置到修改时触发）
+
 ### v1.0 (2026-04-30)
 - 补录版本历史规则（约束元数据库建设 #BR-002）
 - 嵌入 version-history 约束：版本号只追加不覆盖
 - 关联约束：C23（补技能不补约束，创建 Skill 时必须遵循）
+
+---
+
+## 扩展：技能修改自动测试（v1.1，2026-05-01 新增）
+
+来源：本会话发现 skills/supervision-anti-drift 和 claude-values 的 KB 条目落后实际文件 2 个版本。
+
+### 核心问题
+
+每次 Skill 文件修改后，知识库索引（.index.jsonl）和反链（_backlinks.json）不会自动同步。需要人工核对，容易遗漏。
+
+### Skill Change Pipeline（多步自动检测）
+
+```
+① Skill 文件修改（检测 mtime 变化）
+    ↓
+② 执行 skill-change-test.sh（四项必检）
+    ↓
+③ 输出报告（通过/失败/警告）
+    ↓
+④ 失败 → 按 C19 记录 fail-case → 修复
+    ↓
+⑤ 成功 → 更新 .index.jsonl updated 字段
+```
+
+### 四项必检测试用例
+
+| 测试 | 脚本命令 | 通过条件 |
+|------|---------|---------|
+| **A. 索引同步** | `grep skill-name .index.jsonl` | `updated` 字段 ≥ 文件修改时间 |
+| **B. 功能可用性** | KB 查询模拟（按 tags/name 搜索） | 命中条目数 ≥ 1 |
+| **C. 反链一致性** | `grep skill-name _backlinks.json` | 反链条目存在且文件路径有效 |
+| **D. 产出物检测** | Python 解析 SKILL.md 脚本引用 | 引用的脚本存在且可执行 |
+
+### 实现代码
+
+`scripts/skill-change-test.sh`：
+
+```bash
+#!/bin/bash
+# Skill 修改自动测试脚本 v1.1（含 A/B/C/D 四项检测）
+# 用法：bash skill-change-test.sh <skill-name>
+
+set -e
+
+SKILL="$1"
+REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+KB_ROOT="$REPO_ROOT/tasks/audio-comic-skills/knowledge-base"
+INDEX="$KB_ROOT/.index.jsonl"
+BACKLINKS="$KB_ROOT/_backlinks.json"
+SKILL_FILE="$REPO_ROOT/skills/$SKILL/SKILL.md"
+
+# 安全递增函数（避免 set -e 下 ((var++)) 返回 1 的问题）
+inc_pass()  { PASS=$((PASS+1)); }
+inc_fail()  { FAIL=$((FAIL+1)); }
+inc_warn()  { WARN=$((WARN+1)); }
+
+# A/B/C 测试（见 skill-change-test.sh 完整实现，含 Python JSON 解析）
+# ...
+
+# D. 产出物检测（Python 解析 SKILL.md 脚本引用）
+echo "--- D. 产出物检测 ---"
+PY_OUT=$(python3 -c "...")
+# 提取 scripts/ 路径 → 检查存在+可执行 → PASS/FAIL
+if [ 全部存在且可执行 ]; then
+  echo "✅ PASS: N 个产出物全部存在且可执行"
+  inc_pass
+else
+  echo "❌ FAIL: 产出物检测未通过"
+  inc_fail
+fi
+```
+
+详见 `scripts/skill-change-test.sh` 完整实现（含 A/B/C/D 四项）。
+
+### 使用场景
+
+| 场景 | 触发时机 |
+|------|---------|
+| Skill 文件保存后 | 自动检测（或手动运行） |
+| 优化 Skill description 后 | 跑三步测试验证索引同步 |
+| 每周审视时 | 全量跑 skill-change-test.sh 扫描所有 Skill |
+
+### 全量扫描模式
+
+```bash
+# 扫描所有 Skills
+for skill in skills/*/SKILL.md; do
+  name=$(basename $(dirname "$skill"))
+  bash scripts/skill-change-test.sh "$name"
+done
+```
+
+### 失败处理（C19 联动）
+
+测试失败时：
+1. 自动追加 fail-case 条目到 .index.jsonl
+2. 输出具体失败项（哪个测试/哪个文件）
+3. 脚本返回 exit 1，阻断后续操作
+
+### 关联约束
+
+| 约束 | 联动方式 |
+|------|---------|
+| C19 | 测试失败 → 记录 fail-case → 不问用户直接修复 |
+| C23 | 不通过修改约束来规避测试失败，而是补技能 |
+| C24 | Startup Ritual 关联：Skill 修改后 Worker 启动时自动检测 |

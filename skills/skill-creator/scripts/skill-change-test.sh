@@ -44,19 +44,38 @@ PASS=0; FAIL=0; WARN=0
 echo "--- A. 索引同步检测 ---"
 # 用 Python 精确匹配 name 字段（技能可能在 entry_type=experience/skills/skill 中）
 UPDATED=$(python3 -c "
-import sys, json
+import sys, json, re
 for line in open('$INDEX'):
     try:
         e = json.loads(line.strip())
         name = e.get('name','')
-        # name 字段以 skill 名开头（chinese-thinking 中文思维锚定 → 匹配 chinese-thinking）
         if name.startswith('$SKILL') and e.get('entry_type','') in ('skills','skill','experience'):
-            print(e.get('updated',''))
+            upd = e.get('updated','')
+            # 清理微秒+时区后缀，输出标准 ISO 格式
+            upd_clean = re.sub(r'\.\d+\+\d+:\d+$', '', upd)
+            if '+00:00' in upd_clean:
+                upd_clean = upd_clean.replace('+00:00', '')
+            upd_clean = upd_clean.rstrip('Z') + 'Z'
+            print(upd_clean)
             break
     except: pass
 " 2>/dev/null || echo "")
 if [ -n "$UPDATED" ] && [ "$UPDATED" != "None" ]; then
-  UPDATED_TS=$(python3 -c "from datetime import datetime; print(int(datetime.strptime('$UPDATED','%Y-%m-%dT%H:%M:%SZ').timestamp()))" 2>/dev/null || echo "0")
+  # Python 直接解析清理后的时间戳（支持微秒和 +00:00 时区）
+  UPDATED_TS=$(python3 -c "
+import re, sys
+from datetime import datetime
+upd = '$UPDATED'
+# 清理微秒+时区后缀
+upd_clean = re.sub(r'\.\d+\+\d+:\d+$', '', upd)
+if '+00:00' in upd_clean:
+    upd_clean = upd_clean.replace('+00:00', '')
+upd_clean = upd_clean.rstrip('Z') + 'Z'
+try:
+    print(int(datetime.strptime(upd_clean, '%Y-%m-%dT%H:%M:%SZ').timestamp()))
+except:
+    print(0)
+" 2>/dev/null || echo "0")
   if [ "$UPDATED_TS" -ge "$MODIFIED" ]; then
     echo "✅ PASS: updated=$UPDATED"
     inc_pass
@@ -115,6 +134,53 @@ if grep -q "\"$SKILL\":" "$BACKLINKS" 2>/dev/null; then
 else
   echo "⚠️  WARN: _backlinks.json 中无 $SKILL 记录"
   inc_warn
+fi
+echo ""
+
+# D. 产出物检测（调用 Python 辅助脚本）
+echo "--- D. 产出物检测 ---"
+EXTRACT_SCRIPT="$REPO_ROOT/skills/skill-creator/scripts/extract-deliverables.py"
+if [ ! -f "$EXTRACT_SCRIPT" ]; then
+  echo "⚠️  WARN: $EXTRACT_SCRIPT 不存在，跳过产出物检测"
+  inc_warn
+else
+  PY_OUT=$(python3 "$EXTRACT_SCRIPT" "$SKILL_FILE" 2>/dev/null || echo "")
+  if [ -z "$PY_OUT" ] || [ "$PY_OUT" = "null" ]; then
+    echo "✅ PASS: SKILL.md 中无产出物引用（无可检测脚本）"
+    inc_pass
+  else
+    TOTAL=$(echo "$PY_OUT" | python3 -c "
+import json,sys
+data=json.load(sys.stdin)
+print(len(data))
+" 2>/dev/null || echo "0")
+    if [ "$TOTAL" = "0" ]; then
+      echo "✅ PASS: 无产出物引用（无可检测脚本）"
+      inc_pass
+    else
+      MISSING=$(echo "$PY_OUT" | python3 -c "
+import json,sys
+for e in json.load(sys.stdin):
+    if not e.get('exists'):
+        print('  缺失: ' + e.get('path',''))
+" 2>/dev/null)
+      NONEXEC=$(echo "$PY_OUT" | python3 -c "
+import json,sys
+for e in json.load(sys.stdin):
+    if e.get('exists') and not e.get('exec'):
+        print('  不可执行: ' + e.get('path',''))
+" 2>/dev/null)
+      if [ -z "$MISSING" ] && [ -z "$NONEXEC" ]; then
+        echo "✅ PASS: $TOTAL 个产出物全部存在且可执行"
+        inc_pass
+      else
+        [ -n "$MISSING" ] && echo "$MISSING"
+        [ -n "$NONEXEC" ] && echo "$NONEXEC"
+        echo "❌ FAIL: 产出物检测未通过"
+        inc_fail
+      fi
+    fi
+  fi
 fi
 echo ""
 
