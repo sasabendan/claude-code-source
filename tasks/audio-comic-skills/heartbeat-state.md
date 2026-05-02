@@ -1,20 +1,20 @@
 # Heartbeat State
 
-last_heartbeat_at: 2026-04-30T18:55:00
-last_session_end_at: 2026-04-30T18:55:00
+last_heartbeat_at: 2026-05-01T21:50:00
+last_session_end_at: 2026-05-01T21:50:00
 session_gap_minutes: 0
-last_heartbeat_result: BR-003 方案A 授权 + Codex 桌面版状态已记录，等待明日口令触发
+last_heartbeat_result: skill-change-test.sh v1.1完成；24/24 Skills全通过；主线暂停等待openspec安装；战略顾问角色启动；Serper MCP已注册（settings.json）；KB API Key安全规格已更新
 
 ## 每日授权
 - 2026-04-30: BR-001/#BR-002 ✅完成 + BR-003 Supervisor-Worker多Agent流水线（方案A）已授权；主线技术债务推进（已授权）
 
 ## 当前主线节点
-current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + PreToolUse Hook 配置完成（含版本历史/危险命令/HC-AP/HC-API）；20/24 SKILL.md 版本历史嵌入；constraints/ 约束元数据库（11个YAML）；BR-003：Supervisor-Worker 多Agent流水线（Claude Code Supervisor + Codex CLI Worker），等待用户口令触发
+current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + PreToolUse Hook 配置完成（含版本历史/危险命令/HC-AP/HC-API）；constraints/ 约束元数据库（11个YAML）；skill-change-test.sh v1.1（含 D.产出物检测）+ extract-deliverables.py；24/24 Skills 4/4 PASS；BR-003 关联技术债务梳理完成（断裂根因：C5 openspec 未安装）；主线暂停，等待用户安装 openspec@0.21.0 + Codex CLI
 
 ## 技术债务状态
 - C0 自动备份: ✅ cron运行中（*/5 * * * *）每5分钟，SessionStart Hook已配置
 - C1 Rust 重写: ✅ kb-rust-v2存在（738KB），AI问答/知识图谱可视化待加
-- C5 OpenSpec v0.21.0: ⬜ Supervisor-Worker 框架文档完整（KB 6条目），执行路径断裂；方案A已授权（等待Codex CLI安装）
+- C5 OpenSpec v0.21.0: ⏸️ 待安装（npm install -g @fission-ai/openspec@0.21.0）；执行路径断裂根因已定位；BR-003 依赖此步
 - GetBiji API 接入: ⬜ S1双数据源之一，reference-02-biji-api.md已整理
 - pdf-ingest: ⬜ SKILL.md存在，脚本未实现（参考bkywksj/knowledge-base）
 - 5个Skills缺scripts/: ⬜ claude-usage/core-asset-protection/encrypted-backup/kb-overview-supervisor/pdf-ingest
@@ -25,6 +25,7 @@ current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + Pr
 ## C0 cron 日志
 11:25 ✅ / 11:30 ✅ / 11:35 ✅ / 11:40 ✅ / 11:45 ✅
 14:00 ✅ / 14:05 ✅ / 14:10 ✅ / 17:05 ✅
+21:50 ✅（skill-change-test.sh v1.1完成，24/24 Skills全通过，主线暂停等待openspec安装）
 
 ## 分支任务记录
 
@@ -109,7 +110,23 @@ current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + Pr
 ### 分支任务 #BR-003：Supervisor-Worker 多Agent流水线（方案A）
 - **分支来源**：compound-engineering-plugin 审查 + 方案A决策
 - **创建时间**：2026-04-30
-- **状态**：⏸️ 暂停（等待用户口令"codex"触发）
+- **状态**：⏸️ 暂停（等待 openspec@0.21.0 安装完成）
+
+#### 执行路径断裂根因（已定位）
+1. `npm install -g @fission-ai/openspec@0.21.0` 未执行 → openspec 命令不存在
+2. `openspec init` 未执行 → 三记忆文件无法初始化
+3. Codex CLI（桌面版有，CLI 未装）
+
+#### 安装后待执行
+```bash
+npm install -g @fission-ai/openspec@0.21.0
+openspec init
+# → 初始化三记忆文件：tasks.md / feature_list.json / progress.txt
+```
+
+#### 安装前置条件
+- 用户需有 npm 全局安装权限
+- 或手动执行：`npm install -g @fission-ai/openspec@0.21.0 && openspec init`
 
 #### 方案A 目标
 实现真正的 Claude Code Supervisor + Codex Worker 多Agent并行流水线：
@@ -120,11 +137,11 @@ current_main_task: 有声漫画 Skills S0-S5 全部完成；C0 自动备份 + Pr
 5. ⬜ supervision-anti-drift 更新为三记忆文件实现
 6. ⬜ 确权四步接入执行路径（勾选/更新/passes/git commit/progress.txt）
 
-#### 已知断裂点
+#### 已知断裂点（根因已定位）
+- ⏸️ openspec@0.21.0 未安装（用户待执行 `npm install -g @fission-ai/openspec@0.21.0`）
 - Codex CLI 未安装（桌面版已有）
-- 三记忆文件未部署（orchestrator/BUILD_LOG.md 是调研记录非运行状态）
+- 三记忆文件未部署（文档完整，工具缺失）
 - OpenSpec MCP server 未配置
-- 无 git worktree 并行基础设施
 
 #### Supervisor-Worker 框架（已有约定）
 - Supervisor = Claude Code：派发任务、验收确权、更新状态

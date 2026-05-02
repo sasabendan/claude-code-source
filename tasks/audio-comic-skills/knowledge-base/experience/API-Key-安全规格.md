@@ -79,9 +79,10 @@ Claude 确认存储路径（.local.json / Keychain / ~/.backup-password）
 | Key 名称 | 类型 | 存储路径 | 用途 | 状态 |
 |---------|------|---------|------|------|
 | 备份密码 | 密码 | `~/.backup-password` | GitHub 加密备份 | ✅ 已配置 |
-| Exa API Key | API Key | `~/.claude/skills/exa-search/config.local.json` | 网络搜索（MCP） | ✅ 已配置 |
-| Serper API Key | API Key | `~/.claude/skills/serper-search/config.local.json` | 网络搜索 | ✅ 已配置 |
-| MiniMax API Key | API Key | 待确认 | 图像生成 / TTS | ⏳ 待配置 |
+| Serper API Key | API Key | `~/.claude/skills/serper-search/config.local.json` | 网络搜索（MCP） | ✅ 已配置 |
+| Serper MCP Server | MCP | `~/.claude/settings.json` → mcpServers | 监工搜索能力 | ✅ 已注册（2026-05-01） |
+| Exa API Key | API Key | 待确认（config.local.json 未创建） | 网络搜索（深度） | ⚠️ 待配置 |
+| MiniMax API Key | API Key | 环境变量 `ANTHROPIC_AUTH_TOKEN` | 图像生成 / TTS / 监工后端 | ✅ 已配置（minimaxi.com） |
 
 ---
 
